@@ -38,10 +38,7 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): string
     {
-        if ($this->discord_avatar) {
-            return "https://cdn.discordapp.com/avatars/{$this->discord_id}/{$this->discord_avatar}.png";
-        }
-
-        return 'https://cdn.discordapp.com/embed/avatars/0.png';
+        return $this->discord_avatar
+            ?? 'https://cdn.discordapp.com/embed/avatars/0.png';
     }
 }

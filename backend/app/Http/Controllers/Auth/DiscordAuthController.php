@@ -31,9 +31,7 @@ class DiscordAuthController extends Controller
             ['discord_id' => $discordUser->getId()],
             [
                 'discord_username' => $discordUser->getName(),
-                'discord_avatar' => $discordUser->getAvatar()
-                    ? basename(parse_url($discordUser->getAvatar(), PHP_URL_PATH), '.png')
-                    : null,
+                'discord_avatar' => $discordUser->getAvatar(),
                 'discord_access_token' => $discordUser->token,
                 'discord_refresh_token' => $discordUser->refreshToken,
                 'discord_token_expires_at' => now()->addSeconds($discordUser->expiresIn ?? 604800),
