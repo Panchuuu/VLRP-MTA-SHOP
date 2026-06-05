@@ -51,6 +51,19 @@ class PaymentController extends Controller
         return response('ok', 200);
     }
 
+    /**
+     * Flow redirige aquí (POST) al terminar el pago. Reenviamos al SPA con GET.
+     */
+    public function return(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $orderId = $request->input('order') ?? $request->query('order');
+        $base = config('app.frontend_url');
+
+        return $orderId
+            ? redirect($base . '/orders/success?order=' . $orderId)
+            : redirect($base . '/orders');
+    }
+
     private function handleApproved(Order $order, array $payment): void
     {
         if ($order->status === 'completed') {

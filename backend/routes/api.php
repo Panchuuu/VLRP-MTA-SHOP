@@ -24,6 +24,10 @@ Route::get('/products/{slug}', [StoreController::class, 'show']);
 // ─── Webhooks (sin auth de usuario pero con validación propia) ───────
 Route::post('/payments/webhook', [PaymentController::class, 'webhook']);
 
+// Flow hace POST a urlReturn; el backend lo recibe (GET o POST) y redirige
+// al frontend con GET para evitar el 404 del SPA.
+Route::match(['get', 'post'], '/payments/return', [PaymentController::class, 'return']);
+
 // ─── Rutas autenticadas ─────────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [DiscordAuthController::class, 'logout']);

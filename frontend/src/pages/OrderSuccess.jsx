@@ -7,7 +7,7 @@ export default function OrderSuccess() {
   const [params] = useSearchParams();
   const orderId = params.get('order');
   const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!orderId);
   const attempts = useRef(0);
 
   useEffect(() => {
@@ -28,6 +28,8 @@ export default function OrderSuccess() {
             timer = setTimeout(poll, 3000);
           }
         })
+        // El fetch falló: NO es motivo para decir "orden no encontrada".
+        // Mostramos éxito igual (tenemos el orderId de la URL).
         .catch(() => setLoading(false));
     };
     poll();
@@ -35,7 +37,22 @@ export default function OrderSuccess() {
     return () => clearTimeout(timer);
   }, [orderId]);
 
-  const completed = order?.status === 'completed';
+  // Única condición para "no encontrada": que no venga ?order= en la URL.
+  if (!orderId) {
+    return (
+      <div className="min-h-screen bg-[#080810]">
+        <Navbar />
+        <div className="max-w-lg mx-auto px-4 pt-32 pb-16 text-center text-slate-400">
+          <p className="text-xl mb-4">No encontramos la orden</p>
+          <Link to="/store" className="text-purple-400 hover:text-purple-300">
+            ← Volver a la tienda
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Solo un pago realmente rechazado (orden cargada con status failed) muestra error.
   const failed = order?.status === 'failed';
 
   return (
@@ -47,56 +64,41 @@ export default function OrderSuccess() {
             <span className="animate-spin w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full" />
             <p>Confirmando tu pago...</p>
           </div>
-        ) : !order ? (
-          <div className="text-slate-400">
-            <p className="text-xl mb-4">No encontramos la orden</p>
-            <Link to="/store" className="text-purple-400 hover:text-purple-300">
-              ← Volver a la tienda
-            </Link>
-          </div>
         ) : (
           <div className="flex flex-col items-center gap-5">
             <div
               className={`w-20 h-20 rounded-full flex items-center justify-center text-4xl ${
-                completed
-                  ? 'bg-green-950/60 text-green-400'
-                  : failed
-                    ? 'bg-red-950/60 text-red-400'
-                    : 'bg-yellow-950/60 text-yellow-400'
+                failed ? 'bg-red-950/60 text-red-400' : 'bg-green-950/60 text-green-400'
               }`}
             >
-              {completed ? '✓' : failed ? '✕' : '⏳'}
+              {failed ? '✕' : '🎉'}
             </div>
 
             <h1 className="text-2xl font-bold text-white">
-              {completed
-                ? '¡Pago confirmado!'
-                : failed
-                  ? 'El pago no se completó'
-                  : 'Procesando tu pago'}
+              {failed ? 'El pago no se completó' : '¡Pago exitoso!'}
             </h1>
 
             <p className="text-slate-400">
-              {completed
-                ? 'Tus productos se están asignando en Discord y en el servidor. Puede tardar unos minutos.'
-                : failed
-                  ? 'No se pudo procesar el pago. No se realizó ningún cargo.'
-                  : 'Estamos esperando la confirmación de Flow. Esta página se actualiza sola.'}
+              {failed
+                ? 'No se pudo procesar el pago. No se realizó ningún cargo.'
+                : 'Tu compra fue procesada. Los ítems serán asignados en breve (Discord y servidor).'}
             </p>
 
             <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl px-6 py-4 w-full">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Orden</span>
                 <span className="text-slate-300">
-                  #{order.id.slice(-8).toUpperCase()}
+                  #{(order?.id || orderId).slice(-8).toUpperCase()}
                 </span>
               </div>
-              <div className="flex justify-between text-sm mt-2">
-                <span className="text-slate-500">Total</span>
-                <span className="text-green-400 font-semibold">
-                  {order.total_formatted}
-                </span>
-              </div>
+              {order && (
+                <div className="flex justify-between text-sm mt-2">
+                  <span className="text-slate-500">Total</span>
+                  <span className="text-green-400 font-semibold">
+                    {order.total_formatted}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 mt-2">

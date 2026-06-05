@@ -75,7 +75,8 @@ class FlowService
             'amount' => (int) $order->total,
             'email' => $email,
             'urlConfirmation' => config('app.url') . '/api/payments/webhook',
-            'urlReturn' => config('app.frontend_url') . '/orders/success?order=' . $order->id,
+            // Flow hace POST a urlReturn → va al backend, que redirige al SPA con GET.
+            'urlReturn' => config('app.url') . '/api/payments/return?order=' . $order->id,
         ]);
 
         return [
