@@ -7,6 +7,10 @@ import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderSuccess from './pages/OrderSuccess';
+import Gallery from './pages/Gallery';
+import Rules from './pages/Rules';
+import Staff from './pages/Staff';
+import Leaderboard from './pages/Leaderboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
@@ -14,6 +18,9 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminGallery from './pages/admin/AdminGallery';
+import AdminStaff from './pages/admin/AdminStaff';
+import AdminTestimonials from './pages/admin/AdminTestimonials';
 
 export default function App() {
   return (
@@ -23,6 +30,10 @@ export default function App() {
         <Route path="/store" element={<Store />} />
         <Route path="/store/:slug" element={<ProductDetail />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/rules" element={<Rules />} />
+        <Route path="/staff" element={<Staff />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route
           path="/dashboard"
@@ -62,6 +73,9 @@ export default function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="gallery" element={<AdminGallery />} />
+          <Route path="staff" element={<AdminStaff />} />
+          <Route path="testimonials" element={<AdminTestimonials />} />
         </Route>
       </Routes>
     </BrowserRouter>

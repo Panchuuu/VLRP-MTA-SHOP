@@ -51,7 +51,9 @@ return [
 
     'mta' => [
         'url' => env('MTA_SERVER_URL'),
+        'server_url' => env('MTA_SERVER_URL'),
         'secret' => env('MTA_SERVER_SECRET'),
+        'cache_ttl' => env('MTA_CACHE_TTL', 30),
     ],
 
 ];
