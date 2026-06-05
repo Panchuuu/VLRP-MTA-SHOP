@@ -62,6 +62,7 @@ class DiscordAuthController extends Controller
             'id' => $user->id,
             'discord_id' => $user->discord_id,
             'username' => $user->discord_username,
+            'email' => $user->email,
             'avatar_url' => $user->avatar_url,
             'is_admin' => $user->is_admin,
         ]);

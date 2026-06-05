@@ -39,6 +39,19 @@ return [
         'client_id' => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),
+        'bot_token' => env('DISCORD_BOT_TOKEN'),
+        'guild_id' => env('DISCORD_GUILD_ID'),
+    ],
+
+    'flow' => [
+        'api_key' => env('FLOW_API_KEY'),
+        'secret_key' => env('FLOW_SECRET_KEY'),
+        'api_url' => env('FLOW_API_URL', 'https://sandbox.flow.cl/api'),
+    ],
+
+    'mta' => [
+        'url' => env('MTA_SERVER_URL'),
+        'secret' => env('MTA_SERVER_SECRET'),
     ],
 
 ];
