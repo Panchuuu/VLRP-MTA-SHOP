@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\DiscordAuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -43,5 +44,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // ─── Admin ──────────────────────────────────────────────────────────
 Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function () {
-    // Se implementa en Fase 6
+    Route::get('/stats', [Admin\StatsController::class, 'index']);
+    Route::get('/categories', [Admin\ProductController::class, 'categories']);
+    // param name 'id' matches the controller method signatures (string $id);
+    // no 'show' method on the controller, so exclude it.
+    Route::apiResource('products', Admin\ProductController::class)
+        ->parameters(['products' => 'id'])
+        ->except(['show']);
+    Route::get('/orders', [Admin\OrderAdminController::class, 'index']);
+    Route::put('/orders/{id}', [Admin\OrderAdminController::class, 'update']);
+    Route::get('/users', [Admin\UserAdminController::class, 'index']);
+    Route::post('/users/{id}/toggle-admin', [Admin\UserAdminController::class, 'toggleAdmin']);
 });

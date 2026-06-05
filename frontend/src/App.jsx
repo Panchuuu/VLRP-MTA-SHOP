@@ -8,6 +8,12 @@ import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderSuccess from './pages/OrderSuccess';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminUsers from './pages/admin/AdminUsers';
 
 export default function App() {
   return (
@@ -42,6 +48,21 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin (rutas anidadas con AdminLayout + <Outlet />) */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="users" element={<AdminUsers />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
