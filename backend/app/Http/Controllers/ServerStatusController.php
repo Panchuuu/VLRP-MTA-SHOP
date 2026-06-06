@@ -9,58 +9,119 @@ use Illuminate\Support\Facades\Log;
 
 class ServerStatusController extends Controller
 {
-    /**
-     * MTA_SERVER_URL may omit the scheme (e.g. "45.236.90.201:26103").
-     */
-    private function baseUrl(): string
-    {
-        $url = trim((string) config('services.mta.server_url'));
-        if ($url !== '' && ! preg_match('#^https?://#i', $url)) {
-            $url = 'http://' . $url;
-        }
-
-        return rtrim($url, '/');
-    }
-
     public function index(): JsonResponse
     {
         $ttl = (int) config('services.mta.cache_ttl', 30);
+        [$ip, $gamePort] = $this->resolveHostPort();
 
-        $status = Cache::remember('mta_server_status', $ttl, function () {
-            try {
-                $response = Http::timeout(5)
-                    ->withHeaders(['X-Secret' => config('services.mta.secret')])
-                    ->get($this->baseUrl() . '/status');
-
-                // El recurso MTA puede no estar instalado y responder algo no-JSON.
-                $json = $response->ok() ? $response->json() : null;
-                if (is_array($json) && isset($json['online'])) {
-                    return array_merge($json, ['fetched_at' => now()->toISOString()]);
-                }
-            } catch (\Exception $e) {
-                Log::warning('MTA status fetch failed: ' . $e->getMessage());
-            }
-
-            return [
-                'online' => false,
-                'players' => 0,
-                'max' => 64,
-                'name' => config('app.name'),
-                'gamemode' => 'Roleplay',
-                'fetched_at' => now()->toISOString(),
-            ];
+        $status = Cache::remember('mta_server_status', $ttl, function () use ($ip, $gamePort) {
+            return $this->queryAse($ip, $gamePort);
         });
 
         return response()->json($status);
+    }
+
+    /**
+     * Host del servidor (parseado de MTA_SERVER_URL) + puerto de JUEGO.
+     * Ojo: MTA_SERVER_URL apunta al puerto HTTP; el puerto de juego (para ASE)
+     * es distinto y viene de MTA_GAME_PORT.
+     */
+    private function resolveHostPort(): array
+    {
+        $raw = trim((string) config('services.mta.server_url'));
+        $raw = preg_replace('#^https?://#i', '', $raw);
+        $raw = rtrim($raw, '/');
+        $host = explode(':', $raw)[0];
+
+        $ip = $host !== '' ? $host : '45.236.90.201';
+        $gamePort = (int) config('services.mta.game_port', 26103);
+
+        return [$ip, $gamePort];
+    }
+
+    /**
+     * Consulta el servidor MTA vía protocolo ASE (UDP en puerto de juego + 123).
+     */
+    private function queryAse(string $ip, int $gamePort): array
+    {
+        $offline = [
+            'online' => false,
+            'players' => 0,
+            'max' => 0,
+            'name' => config('app.name'),
+            'gamemode' => 'Roleplay',
+            'fetched_at' => now()->toISOString(),
+        ];
+
+        $asePort = $gamePort + 123; // ej. 26103 -> 26226
+
+        // UDP no es confiable: reintentamos algunas veces antes de darlo por offline.
+        $data = null;
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            $socket = @fsockopen("udp://{$ip}", $asePort, $errno, $errstr, 2);
+            if (! $socket) {
+                continue;
+            }
+            fwrite($socket, 's');
+            stream_set_timeout($socket, 2);
+            $data = fread($socket, 4096);
+            fclose($socket);
+
+            if ($data && substr($data, 0, 4) === 'EYE1') {
+                break;
+            }
+            $data = null;
+        }
+
+        if (! $data || substr($data, 0, 4) !== 'EYE1') {
+            return $offline;
+        }
+
+        $pos = 4;
+        $readStr = function () use ($data, &$pos) {
+            if (! isset($data[$pos])) {
+                return '';
+            }
+            $len = ord($data[$pos]) - 1;
+            $pos++;
+            $str = substr($data, $pos, $len);
+            $pos += $len;
+
+            return $str;
+        };
+
+        $game = $readStr();
+        $port = $readStr();
+        $name = $readStr();
+        $gametype = $readStr();
+        $map = $readStr();
+        $version = $readStr();
+        $passworded = $readStr();
+        $players = $readStr();
+        $maxplayers = $readStr();
+
+        return [
+            'online' => true,
+            'name' => $name ?: config('app.name'),
+            'players' => (int) $players,
+            'max' => (int) $maxplayers,
+            'gamemode' => $gametype ?: 'Roleplay',
+            'map' => $map,
+            'fetched_at' => now()->toISOString(),
+        ];
     }
 
     public function leaderboard(): JsonResponse
     {
         $data = Cache::remember('mta_leaderboard', 300, function () {
             try {
+                $url = trim((string) config('services.mta.server_url'));
+                if ($url !== '' && ! preg_match('#^https?://#i', $url)) {
+                    $url = 'http://' . $url;
+                }
                 $response = Http::timeout(5)
                     ->withHeaders(['X-Secret' => config('services.mta.secret')])
-                    ->get($this->baseUrl() . '/leaderboard');
+                    ->get(rtrim($url, '/') . '/leaderboard');
 
                 if ($response->ok()) {
                     return $response->json('players', []);

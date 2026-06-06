@@ -54,6 +54,7 @@ return [
         'server_url' => env('MTA_SERVER_URL'),
         'secret' => env('MTA_SERVER_SECRET'),
         'cache_ttl' => env('MTA_CACHE_TTL', 30),
+        'game_port' => env('MTA_GAME_PORT', 26103), // puerto de juego (ASE = +123)
     ],
 
 ];
