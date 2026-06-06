@@ -50,4 +50,23 @@ class OrderAdminController extends Controller
 
         return response()->json(['message' => 'Estado actualizado', 'status' => $order->status]);
     }
+
+    public function export(Request $request): \Illuminate\Http\Response
+    {
+        $orders = Order::with('user', 'items.product')
+            ->where('status', 'completed')
+            ->latest()
+            ->get();
+
+        $csv = "ID,Usuario,Total,Productos,Fecha\n";
+        foreach ($orders as $o) {
+            $products = $o->items->map(fn ($i) => $i->product?->name)->filter()->implode(' + ');
+            $csv .= "\"{$o->id}\",\"{$o->user?->discord_username}\",{$o->total},\"{$products}\",\"{$o->created_at->format('d/m/Y H:i')}\"\n";
+        }
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="ordenes-' . now()->format('Y-m-d') . '.csv"',
+        ]);
+    }
 }

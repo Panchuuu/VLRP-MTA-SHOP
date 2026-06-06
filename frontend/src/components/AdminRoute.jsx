@@ -17,7 +17,7 @@ export default function AdminRoute({ children }) {
   // Token present but user still loading: don't redirect prematurely.
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#080810] flex items-center justify-center text-slate-500">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#080810] flex items-center justify-center text-slate-500">
         Cargando...
       </div>
     );

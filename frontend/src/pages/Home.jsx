@@ -59,7 +59,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
@@ -78,7 +78,7 @@ export default function Home() {
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           {/* Badge servidor */}
-          <div className="inline-flex items-center gap-2 bg-[#0f0f1a]/80 border border-[#1e1e30] rounded-full px-4 py-2 mb-8 backdrop-blur">
+          <div className="inline-flex items-center gap-2 bg-white dark:bg-[#0f0f1a]/80 border border-slate-200 dark:border-[#1e1e30] rounded-full px-4 py-2 mb-8 backdrop-blur">
             <ServerStatusBadge compact />
           </div>
 
@@ -92,7 +92,7 @@ export default function Home() {
             </span>
           </h1>
 
-          <p className="text-slate-400 text-lg md:text-xl mb-10 max-w-xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-lg md:text-xl mb-10 max-w-xl mx-auto">
             El servidor de roleplay más inmersivo de Chile. Vive tu historia en la
             ciudad de Valparaíso.
           </p>
@@ -106,7 +106,7 @@ export default function Home() {
             </a>
             <Link
               to="/store"
-              className="bg-[#0f0f1a] border border-[#1e1e30] hover:border-purple-500/50 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:-translate-y-0.5"
+              className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/50 text-slate-900 dark:text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:-translate-y-0.5"
             >
               🛒 Ver tienda
             </Link>
@@ -130,10 +130,10 @@ export default function Home() {
       {featured.length > 0 && (
         <Section className="py-24 px-4 max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+            <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
               Tienda
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
               Mejora tu experiencia
             </h2>
           </div>
@@ -142,10 +142,10 @@ export default function Home() {
               <Link
                 key={p.id}
                 to={`/store/${p.slug}`}
-                className={`group bg-[#0f0f1a] border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
+                className={`group bg-white dark:bg-[#0f0f1a] border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
                   i === 1
                     ? 'border-purple-500/50 shadow-[0_0_40px_rgba(124,58,237,0.15)]'
-                    : 'border-[#1e1e30] hover:border-purple-500/30'
+                    : 'border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/30'
                 }`}
               >
                 {i === 1 && (
@@ -153,13 +153,13 @@ export default function Home() {
                     ⭐ POPULAR
                   </div>
                 )}
-                <h3 className="text-white font-bold text-xl mb-2">{p.name}</h3>
+                <h3 className="text-slate-900 dark:text-white font-bold text-xl mb-2">{p.name}</h3>
                 <p className="text-slate-500 text-sm mb-4 line-clamp-2">{p.description}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-green-400 font-bold text-xl">
+                  <span className="text-green-600 dark:text-green-400 font-bold text-xl">
                     {p.price_formatted}
                   </span>
-                  <span className="text-purple-400 text-sm group-hover:translate-x-1 transition-transform">
+                  <span className="text-purple-600 dark:text-purple-400 text-sm group-hover:translate-x-1 transition-transform">
                     Ver más →
                   </span>
                 </div>
@@ -181,10 +181,10 @@ export default function Home() {
       {gallery.length > 0 && (
         <Section className="py-24 bg-gradient-to-b from-[#080810] via-purple-950/5 to-[#080810]">
           <div className="text-center mb-12 px-4">
-            <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+            <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
               Comunidad
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
               Momentos del servidor
             </h2>
           </div>
@@ -200,7 +200,7 @@ export default function Home() {
           >
             {gallery.map((photo) => (
               <SwiperSlide key={photo.id}>
-                <div className="relative aspect-video rounded-xl overflow-hidden border border-[#1e1e30] group">
+                <div className="relative aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-[#1e1e30] group">
                   <img
                     src={photo.image_url}
                     alt={photo.title || 'Foto del servidor'}
@@ -208,7 +208,7 @@ export default function Home() {
                   />
                   {photo.title && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <p className="text-white text-sm font-medium">{photo.title}</p>
+                      <p className="text-slate-900 dark:text-white text-sm font-medium">{photo.title}</p>
                     </div>
                   )}
                 </div>
@@ -230,16 +230,16 @@ export default function Home() {
       {staff.length > 0 && (
         <Section className="py-24 px-4 max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+            <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
               El equipo
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Nuestro staff</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Nuestro staff</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {staff.map((member) => (
               <div
                 key={member.id}
-                className="bg-[#0f0f1a] border border-[#1e1e30] hover:border-purple-500/30 rounded-2xl p-5 text-center transition-all duration-300 hover:-translate-y-1"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/30 rounded-2xl p-5 text-center transition-all duration-300 hover:-translate-y-1"
               >
                 <img
                   src={
@@ -249,8 +249,8 @@ export default function Home() {
                   alt={member.name}
                   className="w-16 h-16 rounded-full mx-auto mb-3 border-2 border-purple-600/50"
                 />
-                <p className="text-white font-semibold text-sm">{member.name}</p>
-                <p className="text-purple-400 text-xs mt-1">{member.role_title}</p>
+                <p className="text-slate-900 dark:text-white font-semibold text-sm">{member.name}</p>
+                <p className="text-purple-600 dark:text-purple-400 text-xs mt-1">{member.role_title}</p>
                 {member.discord_username && (
                   <p className="text-slate-600 text-xs mt-1">@{member.discord_username}</p>
                 )}
@@ -264,10 +264,10 @@ export default function Home() {
       {testimonials.length > 0 && (
         <Section className="py-24 bg-gradient-to-b from-[#080810] via-blue-950/5 to-[#080810]">
           <div className="text-center mb-12 px-4">
-            <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+            <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
               Reviews
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
               Lo que dicen los jugadores
             </h2>
           </div>
@@ -282,7 +282,7 @@ export default function Home() {
           >
             {testimonials.map((t) => (
               <SwiperSlide key={t.id}>
-                <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-2xl p-6 h-full">
+                <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl p-6 h-full">
                   <div className="flex items-center gap-1 mb-3">
                     {[...Array(5)].map((_, i) => (
                       <span key={i} className={i < t.rating ? 'text-yellow-400' : 'text-slate-700'}>
@@ -290,7 +290,7 @@ export default function Home() {
                       </span>
                     ))}
                   </div>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-4">"{t.content}"</p>
+                  <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-4">"{t.content}"</p>
                   <div className="flex items-center gap-2">
                     <img
                       src={
@@ -312,8 +312,8 @@ export default function Home() {
       {/* ── CTA FINAL ─────────────────────────────────────────────── */}
       <Section className="py-24 px-4 text-center">
         <div className="max-w-2xl mx-auto bg-gradient-to-br from-purple-900/20 to-blue-900/10 border border-purple-800/30 rounded-3xl p-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">¿Listo para jugar?</h2>
-          <p className="text-slate-400 mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">¿Listo para jugar?</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-8">
             Únete a la comunidad de Valparaíso RP y empieza tu historia hoy.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -336,20 +336,20 @@ export default function Home() {
       </Section>
 
       {/* ── FOOTER ────────────────────────────────────────────────── */}
-      <footer className="border-t border-[#1e1e30] py-10 px-4">
+      <footer className="border-t border-slate-200 dark:border-[#1e1e30] py-10 px-4">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <p className="text-white font-bold text-lg">
-              ⬡ Valparaíso <span className="text-purple-400">RP</span>
+            <p className="text-slate-900 dark:text-white font-bold text-lg">
+              ⬡ Valparaíso <span className="text-purple-600 dark:text-purple-400">RP</span>
             </p>
             <p className="text-slate-600 text-sm mt-1">El roleplay más inmersivo de Chile</p>
           </div>
           <nav className="flex flex-wrap gap-6 text-sm text-slate-500">
-            <Link to="/store" className="hover:text-white transition-colors">Tienda</Link>
-            <Link to="/gallery" className="hover:text-white transition-colors">Galería</Link>
-            <Link to="/rules" className="hover:text-white transition-colors">Normativas</Link>
-            <Link to="/staff" className="hover:text-white transition-colors">Staff</Link>
-            <Link to="/leaderboard" className="hover:text-white transition-colors">Leaderboard</Link>
+            <Link to="/store" className="hover:text-slate-900 dark:hover:text-white transition-colors">Tienda</Link>
+            <Link to="/gallery" className="hover:text-slate-900 dark:hover:text-white transition-colors">Galería</Link>
+            <Link to="/rules" className="hover:text-slate-900 dark:hover:text-white transition-colors">Normativas</Link>
+            <Link to="/staff" className="hover:text-slate-900 dark:hover:text-white transition-colors">Staff</Link>
+            <Link to="/leaderboard" className="hover:text-slate-900 dark:hover:text-white transition-colors">Leaderboard</Link>
             <a
               href={DISCORD_INVITE}
               target="_blank"

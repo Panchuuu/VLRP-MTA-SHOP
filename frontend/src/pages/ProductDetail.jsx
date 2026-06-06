@@ -26,21 +26,21 @@ export default function ProductDetail() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-[#080810]">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 pt-24">
-          <div className="bg-[#0f0f1a] rounded-xl h-96 animate-pulse" />
+          <div className="bg-white dark:bg-[#0f0f1a] rounded-xl h-96 animate-pulse" />
         </div>
       </div>
     );
 
   if (!product)
     return (
-      <div className="min-h-screen bg-[#080810]">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
         <Navbar />
-        <div className="text-center pt-32 text-slate-400">
+        <div className="text-center pt-32 text-slate-600 dark:text-slate-400">
           <p className="text-2xl mb-4">Producto no encontrado</p>
-          <Link to="/store" className="text-purple-400 hover:text-purple-300">
+          <Link to="/store" className="text-purple-600 dark:text-purple-400 hover:text-purple-300">
             ← Volver a la tienda
           </Link>
         </div>
@@ -48,7 +48,7 @@ export default function ProductDetail() {
     );
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 pt-24 pb-16">
         <Link
@@ -61,16 +61,16 @@ export default function ProductDetail() {
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full rounded-xl border border-[#1e1e30]"
+            className="w-full rounded-xl border border-slate-200 dark:border-[#1e1e30]"
           />
           <div className="space-y-4">
             <span className="text-xs bg-purple-950/60 text-purple-300 border border-purple-800/50 px-2 py-1 rounded-full">
               {product.category?.name}
             </span>
-            <h1 className="text-2xl font-bold text-white">{product.name}</h1>
-            <p className="text-slate-400 leading-relaxed">{product.description}</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{product.name}</h1>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{product.description}</p>
             <div className="flex items-center gap-3 pt-2">
-              <span className="text-3xl font-bold text-green-400">
+              <span className="text-3xl font-bold text-green-600 dark:text-green-400">
                 {product.price_formatted}
               </span>
               {product.duration_label && (

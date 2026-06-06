@@ -14,15 +14,15 @@ export default function Staff() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 pt-24 pb-16">
         <div className="text-center mb-12">
-          <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+          <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
             El equipo
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Nuestro staff</h1>
-          <p className="text-slate-400 mt-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Nuestro staff</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">
             Las personas que mantienen viva la comunidad
           </p>
         </div>
@@ -32,7 +32,7 @@ export default function Staff() {
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="bg-[#0f0f1a] border border-[#1e1e30] rounded-2xl h-52 animate-pulse"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl h-52 animate-pulse"
               />
             ))}
           </div>
@@ -46,7 +46,7 @@ export default function Staff() {
             {staff.map((member) => (
               <div
                 key={member.id}
-                className="bg-[#0f0f1a] border border-[#1e1e30] hover:border-purple-500/40 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(124,58,237,0.1)]"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/40 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(124,58,237,0.1)]"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <img
@@ -58,12 +58,12 @@ export default function Staff() {
                     className="w-16 h-16 rounded-full border-2 border-purple-600/50"
                   />
                   <div>
-                    <p className="text-white font-bold">{member.name}</p>
-                    <p className="text-purple-400 text-sm">{member.role_title}</p>
+                    <p className="text-slate-900 dark:text-white font-bold">{member.name}</p>
+                    <p className="text-purple-600 dark:text-purple-400 text-sm">{member.role_title}</p>
                   </div>
                 </div>
                 {member.description && (
-                  <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                  <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
                     {member.description}
                   </p>
                 )}

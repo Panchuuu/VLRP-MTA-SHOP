@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { createProduct, updateProduct, getAdminCategories } from '../../api/admin';
 
 const inputCls =
-  'w-full bg-[#080810] border border-[#1e1e30] focus:border-purple-500/60 text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none';
+  'w-full bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none';
 
 // Defined at module scope (NOT inside the component) so inputs don't remount
 // and lose focus on every keystroke.
 function Field({ label, hint, children }) {
   return (
     <div>
-      <label className="block text-sm text-slate-400 mb-1">{label}</label>
+      <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">{label}</label>
       {hint && <p className="text-xs text-slate-600 mb-1.5">{hint}</p>}
       {children}
     </div>
@@ -67,10 +67,10 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
   return (
     <div className="p-8 max-w-2xl">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={onCancel} className="text-slate-500 hover:text-white text-sm">
+        <button onClick={onCancel} className="text-slate-500 hover:text-slate-900 dark:hover:text-white text-sm">
           ← Volver
         </button>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
           {isEdit ? 'Editar producto' : 'Nuevo producto'}
         </h1>
       </div>
@@ -185,7 +185,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
               onChange={(e) => set('is_recurring', e.target.checked)}
               className="w-4 h-4 accent-purple-600"
             />
-            <span className="text-sm text-slate-400">Es suscripción mensual</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">Es suscripción mensual</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -194,7 +194,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
               onChange={(e) => set('is_active', e.target.checked)}
               className="w-4 h-4 accent-purple-600"
             />
-            <span className="text-sm text-slate-400">Producto activo</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">Producto activo</span>
           </label>
         </div>
       </div>
@@ -207,7 +207,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
         >
           {saving ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear producto'}
         </button>
-        <button onClick={onCancel} className="text-slate-500 hover:text-white px-4 py-2.5 text-sm">
+        <button onClick={onCancel} className="text-slate-500 hover:text-slate-900 dark:hover:text-white px-4 py-2.5 text-sm">
           Cancelar
         </button>
       </div>

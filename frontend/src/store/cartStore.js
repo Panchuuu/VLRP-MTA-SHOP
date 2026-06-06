@@ -1,15 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// NOTE: derived values (total/count) are computed in components via selectors
-// instead of store getters. Zustand's `set` uses Object.assign, which collapses
-// object-literal getters into static values after the first update — so getters
-// on the state would go stale. Keeping the store as data + actions avoids that.
-
 export const useCartStore = create(
   persist(
     (set, get) => ({
       items: [],
+      coupon: null, // { code, type, value, discount_amount, coupon_id }
 
       addItem: (product) => {
         const exists = get().items.find((i) => i.id === product.id);
@@ -24,21 +20,35 @@ export const useCartStore = create(
         }
       },
 
-      removeItem: (id) =>
-        set({ items: get().items.filter((i) => i.id !== id) }),
+      updateQuantity: (id, quantity) => {
+        if (quantity <= 0) {
+          set({ items: get().items.filter((i) => i.id !== id) });
+        } else {
+          set({
+            items: get().items.map((i) => (i.id === id ? { ...i, quantity } : i)),
+          });
+        }
+      },
 
-      clearCart: () => set({ items: [] }),
+      removeItem: (id) => set({ items: get().items.filter((i) => i.id !== id) }),
+
+      clearCart: () => set({ items: [], coupon: null }),
+
+      setCoupon: (coupon) => set({ coupon }),
+      removeCoupon: () => set({ coupon: null }),
+
+      // Selectores (funciones, NO getters de objeto — ver nota histórica del proyecto)
+      getSubtotal: () => get().items.reduce((s, i) => s + i.price * i.quantity, 0),
+      getDiscount: () => get().coupon?.discount_amount ?? 0,
+      getTotal: () => Math.max(0, get().getSubtotal() - get().getDiscount()),
+      getCount: () => get().items.reduce((s, i) => s + i.quantity, 0),
+
+      formatCLP: (amount) => '$' + new Intl.NumberFormat('es-CL').format(amount) + ' CLP',
     }),
-    { name: 'valparaiso-cart', partialize: (state) => ({ items: state.items }) }
+    { name: 'vlrp-cart', partialize: (s) => ({ items: s.items, coupon: s.coupon }) }
   )
 );
 
-// ─── Selectors / helpers (pure, derived from items) ──────────────────
-export const selectCount = (state) =>
-  state.items.reduce((n, i) => n + i.quantity, 0);
-
-export const selectTotal = (state) =>
-  state.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-
-export const formatCLP = (value) =>
-  '$' + new Intl.NumberFormat('es-CL').format(value) + ' CLP';
+// Helper exportado para usos puntuales fuera de React.
+export const formatCLP = (amount) =>
+  '$' + new Intl.NumberFormat('es-CL').format(amount) + ' CLP';

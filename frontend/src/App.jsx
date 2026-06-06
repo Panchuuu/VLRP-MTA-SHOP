@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useThemeStore } from './store/themeStore';
 import Home from './pages/Home';
 import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
@@ -21,8 +23,15 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminStaff from './pages/admin/AdminStaff';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
+import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
 
 export default function App() {
+  const initTheme = useThemeStore((s) => s.init);
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -76,6 +85,8 @@ export default function App() {
           <Route path="gallery" element={<AdminGallery />} />
           <Route path="staff" element={<AdminStaff />} />
           <Route path="testimonials" element={<AdminTestimonials />} />
+          <Route path="coupons" element={<AdminCoupons />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
         </Route>
       </Routes>
     </BrowserRouter>

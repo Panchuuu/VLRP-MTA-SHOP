@@ -21,8 +21,8 @@ export default function ServerStatusBadge({ compact = false }) {
         }`}
       />
       {status.online ? (
-        <span className="text-slate-300">
-          <span className="text-green-400 font-semibold">{status.players}</span>
+        <span className="text-slate-700 dark:text-slate-300">
+          <span className="text-green-600 dark:text-green-400 font-semibold">{status.players}</span>
           <span className="text-slate-500">/{status.max}</span>
           <span className="text-slate-500 ml-1">jugadores</span>
         </span>

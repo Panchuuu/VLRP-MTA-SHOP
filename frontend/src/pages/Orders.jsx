@@ -8,7 +8,7 @@ const STATUS_STYLES = {
   processing: 'bg-blue-950/60 text-blue-300 border-blue-800/50',
   completed: 'bg-green-950/60 text-green-300 border-green-800/50',
   failed: 'bg-red-950/60 text-red-300 border-red-800/50',
-  refunded: 'bg-slate-800 text-slate-300 border-slate-700',
+  refunded: 'bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-700',
 };
 
 function StatusBadge({ status, label }) {
@@ -37,17 +37,17 @@ export default function Orders() {
   }, [page]);
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 pt-24 pb-16">
-        <h1 className="text-2xl font-bold text-white mb-8">Mis Órdenes</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">Mis Órdenes</h1>
 
         {loading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl h-28 animate-pulse"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl h-28 animate-pulse"
               />
             ))}
           </div>
@@ -55,7 +55,7 @@ export default function Orders() {
           <div className="text-center text-slate-500 py-24">
             <p className="text-5xl mb-4">🧾</p>
             <p className="text-lg mb-4">Todavía no tienes órdenes</p>
-            <Link to="/store" className="text-purple-400 hover:text-purple-300">
+            <Link to="/store" className="text-purple-600 dark:text-purple-400 hover:text-purple-300">
               Ir a la tienda →
             </Link>
           </div>
@@ -64,7 +64,7 @@ export default function Orders() {
             {orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl p-5"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl p-5"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -80,11 +80,11 @@ export default function Orders() {
                   <StatusBadge status={order.status} label={order.status_label} />
                 </div>
 
-                <div className="space-y-1.5 border-t border-[#1e1e30] pt-3">
+                <div className="space-y-1.5 border-t border-slate-200 dark:border-[#1e1e30] pt-3">
                   {(order.items || []).map((item) => (
                     <div
                       key={item.id}
-                      className="flex justify-between text-sm text-slate-300"
+                      className="flex justify-between text-sm text-slate-700 dark:text-slate-300"
                     >
                       <span>
                         {item.name}
@@ -94,16 +94,16 @@ export default function Orders() {
                           </span>
                         )}
                       </span>
-                      <span className="text-slate-400">
+                      <span className="text-slate-600 dark:text-slate-400">
                         {item.unit_price_formatted}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex justify-between items-center border-t border-[#1e1e30] mt-3 pt-3">
-                  <span className="text-sm text-slate-400">Total</span>
-                  <span className="text-green-400 font-bold">
+                <div className="flex justify-between items-center border-t border-slate-200 dark:border-[#1e1e30] mt-3 pt-3">
+                  <span className="text-sm text-slate-600 dark:text-slate-400">Total</span>
+                  <span className="text-green-600 dark:text-green-400 font-bold">
                     {order.total_formatted}
                   </span>
                 </div>
@@ -122,7 +122,7 @@ export default function Orders() {
                 className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
                   page === i + 1
                     ? 'bg-purple-600 text-white'
-                    : 'bg-[#0f0f1a] border border-[#1e1e30] text-slate-400 hover:text-white'
+                    : 'bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {i + 1}

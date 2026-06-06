@@ -15,15 +15,15 @@ export default function Gallery() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 pt-24 pb-16">
         <div className="text-center mb-12">
-          <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+          <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
             Comunidad
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Galería</h1>
-          <p className="text-slate-400 mt-2">Momentos capturados en Valparaíso RP</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Galería</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">Momentos capturados en Valparaíso RP</p>
         </div>
 
         {loading ? (
@@ -31,7 +31,7 @@ export default function Gallery() {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl h-56 animate-pulse"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl h-56 animate-pulse"
               />
             ))}
           </div>
@@ -46,7 +46,7 @@ export default function Gallery() {
               <button
                 key={photo.id}
                 onClick={() => setActive(photo)}
-                className="block w-full break-inside-avoid rounded-xl overflow-hidden border border-[#1e1e30] hover:border-purple-500/50 transition-all group"
+                className="block w-full break-inside-avoid rounded-xl overflow-hidden border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/50 transition-all group"
               >
                 <img
                   src={photo.image_url}
@@ -54,8 +54,8 @@ export default function Gallery() {
                   className="w-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
                 />
                 {photo.title && (
-                  <div className="bg-[#0f0f1a] px-3 py-2 text-left">
-                    <p className="text-white text-sm font-medium">{photo.title}</p>
+                  <div className="bg-white dark:bg-[#0f0f1a] px-3 py-2 text-left">
+                    <p className="text-slate-900 dark:text-white text-sm font-medium">{photo.title}</p>
                   </div>
                 )}
               </button>
@@ -71,7 +71,7 @@ export default function Gallery() {
           onClick={() => setActive(null)}
         >
           <button
-            className="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl"
+            className="absolute top-4 right-4 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-3xl"
             onClick={() => setActive(null)}
           >
             ×
@@ -84,9 +84,9 @@ export default function Gallery() {
             />
             {(active.title || active.description) && (
               <div className="mt-4 text-center">
-                {active.title && <p className="text-white font-semibold">{active.title}</p>}
+                {active.title && <p className="text-slate-900 dark:text-white font-semibold">{active.title}</p>}
                 {active.description && (
-                  <p className="text-slate-400 text-sm mt-1">{active.description}</p>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">{active.description}</p>
                 )}
               </div>
             )}

@@ -17,8 +17,10 @@ export const getAdminOrders = (p = 1, status = '') =>
     .then((r) => r.data);
 export const updateOrderStatus = (id, status) =>
   api.put(`/admin/orders/${id}`, { status }).then((r) => r.data);
-export const getAdminUsers = (p = 1) =>
-  api.get('/admin/users', { params: { page: p } }).then((r) => r.data);
+export const getAdminUsers = (p = 1, search = '') =>
+  api
+    .get('/admin/users', { params: { page: p, search: search || undefined } })
+    .then((r) => r.data);
 export const toggleAdmin = (id) =>
   api.post(`/admin/users/${id}/toggle-admin`).then((r) => r.data);
 
@@ -56,3 +58,30 @@ export const getAdminTestimonials = () =>
   api.get('/admin/testimonials').then((r) => r.data.data);
 export const setTestimonialApproved = (id, approved) =>
   api.put(`/admin/testimonials/${id}`, { is_approved: approved }).then((r) => r.data);
+
+// ─── Cupones ─────────────────────────────────────────────────────────
+export const getAdminCoupons = () =>
+  api.get('/admin/coupons').then((r) => r.data.data);
+export const createCoupon = (data) =>
+  api.post('/admin/coupons', data).then((r) => r.data);
+export const updateCoupon = (id, d) =>
+  api.put(`/admin/coupons/${id}`, d).then((r) => r.data);
+export const deleteCoupon = (id) =>
+  api.delete(`/admin/coupons/${id}`).then((r) => r.data);
+
+// ─── Analytics ───────────────────────────────────────────────────────
+export const getAnalytics = () =>
+  api.get('/admin/analytics').then((r) => r.data.data);
+
+// Descarga el CSV de órdenes (con el token de auth vía axios).
+export const exportOrders = () =>
+  api.get('/admin/orders/export', { responseType: 'blob' }).then((r) => {
+    const url = URL.createObjectURL(new Blob([r.data], { type: 'text/csv' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ordenes-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });

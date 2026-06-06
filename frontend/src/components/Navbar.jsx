@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { useCartStore } from '../store/cartStore';
+import { useThemeStore } from '../store/themeStore';
 import CartDrawer from './CartDrawer';
 
 export default function Navbar() {
@@ -9,6 +10,7 @@ export default function Navbar() {
   const cartCount = useCartStore((s) =>
     s.items.reduce((n, i) => n + i.quantity, 0)
   );
+  const { toggle, isDark } = useThemeStore();
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -20,33 +22,36 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-[#080810]/95 backdrop-blur border-b border-[#1e1e30]">
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#080810]/95 backdrop-blur border-b border-slate-200 dark:border-[#1e1e30]">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-white">
-            <span className="text-purple-400">⬡</span>
+          <Link
+            to="/"
+            className="flex items-center gap-2 font-display font-bold text-lg text-slate-900 dark:text-white"
+          >
+            <span className="text-purple-500 dark:text-purple-400">⬡</span>
             <span>
-              Valparaíso <span className="text-purple-400">RP</span>
+              Valparaíso <span className="text-purple-500 dark:text-purple-400">RP</span>
             </span>
           </Link>
 
           {/* Nav links */}
-          <div className="hidden md:flex items-center gap-6 text-sm text-slate-400">
-            <Link to="/" className="hover:text-white transition-colors">
+          <div className="hidden md:flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
+            <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition-colors">
               Inicio
             </Link>
-            <Link to="/store" className="hover:text-white transition-colors">
+            <Link to="/store" className="hover:text-slate-900 dark:hover:text-white transition-colors">
               Tienda
             </Link>
             {isAuthenticated() && (
-              <Link to="/dashboard" className="hover:text-white transition-colors">
+              <Link to="/dashboard" className="hover:text-slate-900 dark:hover:text-white transition-colors">
                 Mi Cuenta
               </Link>
             )}
             {user?.is_admin && (
               <Link
                 to="/admin"
-                className="text-purple-400 hover:text-purple-300 transition-colors"
+                className="text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 transition-colors"
               >
                 Admin
               </Link>
@@ -55,10 +60,49 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {/* Theme toggle */}
+            <button
+              onClick={toggle}
+              className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              title="Cambiar tema"
+            >
+              {isDark() ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
+                </svg>
+              )}
+            </button>
+
             {/* Cart button */}
             <button
               onClick={() => setCartOpen(true)}
-              className="relative p-2 text-slate-400 hover:text-white transition-colors"
+              className="relative p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +119,7 @@ export default function Navbar() {
                 />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold font-display">
                   {cartCount}
                 </span>
               )}
@@ -86,7 +130,7 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-2 text-sm text-slate-300 hover:text-white"
+                  className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 >
                   <img
                     src={user?.avatar_url}
@@ -95,27 +139,27 @@ export default function Navbar() {
                   />
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-[#0f0f1a] border border-[#1e1e30] rounded-lg py-1 shadow-xl">
-                    <div className="px-4 py-2 text-xs text-slate-500 border-b border-[#1e1e30]">
+                  <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-lg py-1 shadow-xl">
+                    <div className="px-4 py-2 text-xs text-slate-400 dark:text-slate-500 border-b border-slate-200 dark:border-[#1e1e30]">
                       {user?.username}
                     </div>
                     <Link
                       to="/dashboard"
-                      className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-[#1a1a2e]"
+                      className="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1a1a2e]"
                       onClick={() => setMenuOpen(false)}
                     >
                       Mi Cuenta
                     </Link>
                     <Link
                       to="/orders"
-                      className="block px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-[#1a1a2e]"
+                      className="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1a1a2e]"
                       onClick={() => setMenuOpen(false)}
                     >
                       Mis Órdenes
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-[#1a1a2e]"
+                      className="w-full text-left px-4 py-2 text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-slate-100 dark:hover:bg-[#1a1a2e]"
                     >
                       Cerrar Sesión
                     </button>

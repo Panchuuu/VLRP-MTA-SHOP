@@ -18,6 +18,9 @@ return [
     // Decoupled SPA origin — used to build payment return URLs (Flow urlReturn).
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
 
+    // Discord invite link used by the checkout membership gate.
+    'discord_invite' => env('DISCORD_INVITE_URL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

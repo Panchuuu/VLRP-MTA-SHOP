@@ -47,15 +47,15 @@ const SECTIONS = [
 
 export default function Rules() {
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 pt-24 pb-16">
         <div className="text-center mb-12">
-          <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+          <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
             Comunidad
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Normativas</h1>
-          <p className="text-slate-400 mt-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Normativas</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">
             Reglas para mantener una experiencia justa y divertida para todos
           </p>
         </div>
@@ -64,15 +64,15 @@ export default function Rules() {
           {SECTIONS.map((section) => (
             <div
               key={section.title}
-              className="bg-[#0f0f1a] border border-[#1e1e30] rounded-2xl p-6"
+              className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl p-6"
             >
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-2xl">{section.icon}</span>
-                <h2 className="text-xl font-bold text-white">{section.title}</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">{section.title}</h2>
               </div>
               <ul className="space-y-2.5">
                 {section.rules.map((rule, i) => (
-                  <li key={i} className="flex gap-3 text-slate-400 text-sm leading-relaxed">
+                  <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                     <span className="text-purple-500 flex-shrink-0">▸</span>
                     <span>{rule}</span>
                   </li>

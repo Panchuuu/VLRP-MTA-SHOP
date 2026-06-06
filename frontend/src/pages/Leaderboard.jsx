@@ -16,44 +16,44 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-3xl mx-auto px-4 pt-24 pb-16">
         <div className="text-center mb-12">
-          <p className="text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
+          <p className="text-purple-600 dark:text-purple-400 text-sm font-semibold uppercase tracking-widest mb-2">
             Ranking
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Leaderboard</h1>
-          <p className="text-slate-400 mt-2">Los jugadores más activos del servidor</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Leaderboard</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">Los jugadores más activos del servidor</p>
         </div>
 
         {loading ? (
-          <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl h-64 animate-pulse" />
+          <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl h-64 animate-pulse" />
         ) : players.length === 0 ? (
-          <div className="text-center text-slate-500 py-20 bg-[#0f0f1a] border border-[#1e1e30] rounded-2xl">
+          <div className="text-center text-slate-500 py-20 bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl">
             <p className="text-5xl mb-4">🏆</p>
-            <p className="text-lg text-slate-300 mb-1">Ranking no disponible</p>
+            <p className="text-lg text-slate-700 dark:text-slate-300 mb-1">Ranking no disponible</p>
             <p className="text-sm">
               El leaderboard se mostrará cuando el servidor MTA esté activo y reportando
               estadísticas.
             </p>
           </div>
         ) : (
-          <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-2xl overflow-hidden">
+          <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl overflow-hidden">
             {players.map((p, i) => (
               <div
                 key={p.name ?? i}
-                className={`flex items-center gap-4 px-5 py-4 border-b border-[#1e1e30]/60 last:border-0 ${
+                className={`flex items-center gap-4 px-5 py-4 border-b border-slate-200 dark:border-[#1e1e30]/60 last:border-0 ${
                   i < 3 ? 'bg-purple-950/10' : ''
                 }`}
               >
-                <div className="w-8 text-center font-bold text-slate-400">
+                <div className="w-8 text-center font-bold text-slate-600 dark:text-slate-400">
                   {MEDALS[i] || `#${i + 1}`}
                 </div>
                 <div className="flex-1">
-                  <p className="text-white font-medium">{p.name ?? 'Jugador'}</p>
+                  <p className="text-slate-900 dark:text-white font-medium">{p.name ?? 'Jugador'}</p>
                 </div>
-                <div className="text-purple-400 text-sm font-semibold">
+                <div className="text-purple-600 dark:text-purple-400 text-sm font-semibold">
                   {p.hours != null
                     ? `${p.hours} h`
                     : p.playtime != null

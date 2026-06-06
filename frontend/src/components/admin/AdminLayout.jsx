@@ -8,15 +8,17 @@ const links = [
   { to: '/admin/gallery', label: 'Galería', icon: '🖼️' },
   { to: '/admin/staff', label: 'Staff', icon: '🧑‍💼' },
   { to: '/admin/testimonials', label: 'Testimonios', icon: '💬' },
+  { to: '/admin/coupons', label: 'Cupones', icon: '🏷️' },
+  { to: '/admin/analytics', label: 'Analytics', icon: '📈' },
 ];
 
 export default function AdminLayout() {
   return (
-    <div className="min-h-screen bg-[#080810] flex">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810] flex">
       {/* Sidebar */}
-      <aside className="w-56 flex-shrink-0 bg-[#0a0a14] border-r border-[#1e1e30] flex flex-col">
-        <div className="p-4 border-b border-[#1e1e30]">
-          <p className="text-purple-400 font-bold text-sm">⬡ Valparaíso RP</p>
+      <aside className="w-56 flex-shrink-0 bg-white dark:bg-[#0a0a14] border-r border-slate-200 dark:border-[#1e1e30] flex flex-col">
+        <div className="p-4 border-b border-slate-200 dark:border-[#1e1e30]">
+          <p className="text-purple-600 dark:text-purple-400 font-bold text-sm">⬡ Valparaíso RP</p>
           <p className="text-slate-500 text-xs mt-0.5">Panel Admin</p>
         </div>
         <nav className="flex-1 p-3 space-y-1">
@@ -29,7 +31,7 @@ export default function AdminLayout() {
                 `flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
                   isActive
                     ? 'bg-purple-600/20 text-purple-300 border border-purple-700/50'
-                    : 'text-slate-400 hover:text-white hover:bg-[#1a1a2e]'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1a1a2e]'
                 }`
               }
             >
@@ -38,7 +40,7 @@ export default function AdminLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="p-3 border-t border-[#1e1e30]">
+        <div className="p-3 border-t border-slate-200 dark:border-[#1e1e30]">
           <NavLink
             to="/"
             className="flex items-center gap-2 px-3 py-2 text-xs text-slate-600 hover:text-slate-400 transition-colors"

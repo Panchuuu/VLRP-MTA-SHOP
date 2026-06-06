@@ -51,13 +51,13 @@ export default function Store() {
   }, [search]);
 
   return (
-    <div className="min-h-screen bg-[#080810]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#080810]">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 pt-24 pb-16">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Tienda</h1>
-          <p className="text-slate-400">Mejora tu experiencia en Valparaíso RP</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Tienda</h1>
+          <p className="text-slate-600 dark:text-slate-400">Mejora tu experiencia en Valparaíso RP</p>
         </div>
 
         {/* Filtros */}
@@ -72,7 +72,7 @@ export default function Store() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeCategory === ''
                   ? 'bg-purple-600 text-white'
-                  : 'bg-[#0f0f1a] border border-[#1e1e30] text-slate-400 hover:text-white hover:border-purple-500/50'
+                  : 'bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-purple-500/50'
               }`}
             >
               Todos
@@ -87,7 +87,7 @@ export default function Store() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   activeCategory === cat.slug
                     ? 'bg-purple-600 text-white'
-                    : 'bg-[#0f0f1a] border border-[#1e1e30] text-slate-400 hover:text-white hover:border-purple-500/50'
+                    : 'bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-purple-500/50'
                 }`}
               >
                 {cat.name}
@@ -106,7 +106,7 @@ export default function Store() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar productos..."
-            className="sm:ml-auto bg-[#0f0f1a] border border-[#1e1e30] text-slate-100 placeholder-slate-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-purple-500/50 w-full sm:w-64"
+            className="sm:ml-auto bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-purple-500/50 w-full sm:w-64"
           />
         </div>
 
@@ -116,7 +116,7 @@ export default function Store() {
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl h-72 animate-pulse"
+                className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl h-72 animate-pulse"
               />
             ))}
           </div>
@@ -143,7 +143,7 @@ export default function Store() {
                 className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
                   page === i + 1
                     ? 'bg-purple-600 text-white'
-                    : 'bg-[#0f0f1a] border border-[#1e1e30] text-slate-400 hover:text-white'
+                    : 'bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {i + 1}

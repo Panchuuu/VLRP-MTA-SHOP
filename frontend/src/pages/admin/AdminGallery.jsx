@@ -69,7 +69,7 @@ export default function AdminGallery() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-white">Galería</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Galería</h1>
         <div className="flex gap-3">
           <button
             onClick={() => fileRef.current?.click()}
@@ -80,7 +80,7 @@ export default function AdminGallery() {
           </button>
           <button
             onClick={() => setUrlForm((f) => ({ ...f, open: !f.open }))}
-            className="bg-[#0f0f1a] border border-[#1e1e30] hover:border-purple-500/50 text-slate-300 px-4 py-2 rounded-lg text-sm"
+            className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/50 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm"
           >
             🔗 Agregar por URL
           </button>
@@ -101,18 +101,18 @@ export default function AdminGallery() {
       )}
 
       {urlForm.open && (
-        <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-3">
+        <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-3">
           <input
             value={urlForm.image_url}
             onChange={(e) => setUrlForm((f) => ({ ...f, image_url: e.target.value }))}
             placeholder="https://...imagen.jpg"
-            className="flex-1 bg-[#080810] border border-[#1e1e30] focus:border-purple-500/60 text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none"
+            className="flex-1 bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none"
           />
           <input
             value={urlForm.title}
             onChange={(e) => setUrlForm((f) => ({ ...f, title: e.target.value }))}
             placeholder="Título (opcional)"
-            className="sm:w-48 bg-[#080810] border border-[#1e1e30] focus:border-purple-500/60 text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none"
+            className="sm:w-48 bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none"
           />
           <button
             onClick={handleUrlAdd}
@@ -129,7 +129,7 @@ export default function AdminGallery() {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl aspect-video animate-pulse"
+              className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl aspect-video animate-pulse"
             />
           ))}
         </div>
@@ -140,11 +140,11 @@ export default function AdminGallery() {
           {photos.map((p) => (
             <div
               key={p.id}
-              className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl overflow-hidden group relative"
+              className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden group relative"
             >
               <img src={p.image_url} alt={p.title || ''} className="w-full aspect-video object-cover" />
               <div className="p-2 flex items-center justify-between">
-                <span className="text-xs text-slate-400 truncate">{p.title || 'Sin título'}</span>
+                <span className="text-xs text-slate-600 dark:text-slate-400 truncate">{p.title || 'Sin título'}</span>
                 <button
                   onClick={() => handleDelete(p.id)}
                   className="text-xs text-red-500 hover:text-red-400 flex-shrink-0 ml-2"

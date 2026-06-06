@@ -14,16 +14,24 @@ class Order extends Model
     protected $fillable = [
         'user_id', 'status', 'total', 'payment_method',
         'payment_id', 'payment_metadata',
+        'coupon_id', 'discount_amount', 'subtotal',
     ];
 
     protected $casts = [
         'total' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'subtotal' => 'decimal:2',
         'payment_metadata' => 'array',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function items(): HasMany

@@ -7,7 +7,7 @@ import {
 } from '../../api/admin';
 
 const inputCls =
-  'w-full bg-[#080810] border border-[#1e1e30] focus:border-purple-500/60 text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none';
+  'w-full bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none';
 
 const EMPTY = {
   name: '',
@@ -49,10 +49,10 @@ function StaffForm({ member, onSave, onCancel }) {
   return (
     <div className="p-8 max-w-2xl">
       <div className="flex items-center gap-4 mb-8">
-        <button onClick={onCancel} className="text-slate-500 hover:text-white text-sm">
+        <button onClick={onCancel} className="text-slate-500 hover:text-slate-900 dark:hover:text-white text-sm">
           ← Volver
         </button>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
           {isEdit ? 'Editar miembro' : 'Nuevo miembro'}
         </h1>
       </div>
@@ -66,35 +66,35 @@ function StaffForm({ member, onSave, onCancel }) {
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Nombre *</label>
+            <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Nombre *</label>
             <input className={inputCls} value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Juan" />
           </div>
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Cargo *</label>
+            <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Cargo *</label>
             <input className={inputCls} value={form.role_title} onChange={(e) => set('role_title', e.target.value)} placeholder="Fundador / Admin / Moderador" />
           </div>
         </div>
         <div>
-          <label className="block text-sm text-slate-400 mb-1">Descripción</label>
+          <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Descripción</label>
           <textarea className={inputCls + ' h-20 resize-none'} value={form.description ?? ''} onChange={(e) => set('description', e.target.value)} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Discord username</label>
+            <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Discord username</label>
             <input className={inputCls} value={form.discord_username ?? ''} onChange={(e) => set('discord_username', e.target.value)} placeholder="usuario" />
           </div>
           <div>
-            <label className="block text-sm text-slate-400 mb-1">Orden</label>
+            <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">Orden</label>
             <input type="number" className={inputCls} value={form.sort_order} onChange={(e) => set('sort_order', e.target.value)} />
           </div>
         </div>
         <div>
-          <label className="block text-sm text-slate-400 mb-1">URL de avatar</label>
+          <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">URL de avatar</label>
           <input className={inputCls} value={form.avatar_url ?? ''} onChange={(e) => set('avatar_url', e.target.value)} placeholder="https://..." />
         </div>
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" checked={form.is_active} onChange={(e) => set('is_active', e.target.checked)} className="w-4 h-4 accent-purple-600" />
-          <span className="text-sm text-slate-400">Activo (visible en el sitio)</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">Activo (visible en el sitio)</span>
         </label>
       </div>
 
@@ -106,7 +106,7 @@ function StaffForm({ member, onSave, onCancel }) {
         >
           {saving ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Crear'}
         </button>
-        <button onClick={onCancel} className="text-slate-500 hover:text-white px-4 py-2.5 text-sm">
+        <button onClick={onCancel} className="text-slate-500 hover:text-slate-900 dark:hover:text-white px-4 py-2.5 text-sm">
           Cancelar
         </button>
       </div>
@@ -153,7 +153,7 @@ export default function AdminStaff() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">Staff</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Staff</h1>
         <button
           onClick={() => setEditing('new')}
           className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
@@ -162,10 +162,10 @@ export default function AdminStaff() {
         </button>
       </div>
 
-      <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1e1e30] text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-[#1e1e30] text-slate-500">
               <th className="text-left px-4 py-3">Miembro</th>
               <th className="text-left px-4 py-3">Cargo</th>
               <th className="text-left px-4 py-3">Estado</th>
@@ -179,7 +179,7 @@ export default function AdminStaff() {
               <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-600">Sin miembros todavía</td></tr>
             ) : (
               staff.map((m) => (
-                <tr key={m.id} className="border-b border-[#1e1e30]/50 hover:bg-[#13132a]">
+                <tr key={m.id} className="border-b border-slate-200 dark:border-[#1e1e30]/50 hover:bg-slate-100 dark:hover:bg-[#13132a]">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <img
@@ -187,17 +187,17 @@ export default function AdminStaff() {
                         alt={m.name}
                         className="w-8 h-8 rounded-full"
                       />
-                      <span className="text-slate-200 font-medium">{m.name}</span>
+                      <span className="text-slate-800 dark:text-slate-200 font-medium">{m.name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-purple-400">{m.role_title}</td>
+                  <td className="px-4 py-3 text-purple-600 dark:text-purple-400">{m.role_title}</td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${m.is_active ? 'bg-green-950/50 text-green-400 border-green-800/50' : 'bg-slate-800 text-slate-500 border-slate-700'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full border ${m.is_active ? 'bg-green-950/50 text-green-600 dark:text-green-400 border-green-800/50' : 'bg-slate-800 text-slate-500 border-slate-700'}`}>
                       {m.is_active ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="px-4 py-3 flex gap-2">
-                    <button onClick={() => setEditing(m)} className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded border border-[#1e1e30] hover:border-slate-500">Editar</button>
+                    <button onClick={() => setEditing(m)} className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 py-1 rounded border border-slate-200 dark:border-[#1e1e30] hover:border-slate-500">Editar</button>
                     <button onClick={() => handleDelete(m.id)} className="text-xs text-red-500 hover:text-red-400 px-2 py-1 rounded border border-red-900/50 hover:border-red-700">Eliminar</button>
                   </td>
                 </tr>

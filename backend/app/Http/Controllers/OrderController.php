@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -33,6 +34,8 @@ class OrderController extends Controller
             'items.*.product_id' => 'required|uuid|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1|max:10',
             'email' => 'required|email|max:200',
+            'coupon_id' => 'nullable|uuid|exists:coupons,id',
+            'discount_amount' => 'nullable|numeric|min:0',
         ]);
 
         // Cargar productos desde DB (nunca confiar en precios del cliente)
@@ -54,6 +57,19 @@ class OrderController extends Controller
             fn ($item) => $products[$item['product_id']]->price * $item['quantity']
         );
 
+        // Verificar el cupón si viene (revalidar contra DB, no confiar en el cliente)
+        $discountAmount = 0;
+        $couponId = null;
+        if ($request->filled('coupon_id')) {
+            $coupon = Coupon::find($validated['coupon_id']);
+            if ($coupon && $coupon->is_active) {
+                $discountAmount = min((float) $request->discount_amount, $total);
+                $couponId = $coupon->id;
+            }
+        }
+
+        $finalTotal = max(0, $total - $discountAmount);
+
         DB::beginTransaction();
         try {
             // Guardar el email en el perfil si el usuario no lo tenía
@@ -66,7 +82,10 @@ class OrderController extends Controller
                 'id' => Str::uuid(),
                 'user_id' => $user->id,
                 'status' => 'pending',
-                'total' => $total,
+                'subtotal' => $total,
+                'discount_amount' => $discountAmount,
+                'total' => $finalTotal,
+                'coupon_id' => $couponId,
                 'payment_method' => 'flow',
             ]);
 
@@ -87,6 +106,11 @@ class OrderController extends Controller
                 'payment_id' => (string) $result['flow_order'],
                 'payment_metadata' => ['flow_token' => $result['token']],
             ]);
+
+            // Incrementar el uso del cupón
+            if ($order->coupon_id) {
+                Coupon::where('id', $order->coupon_id)->increment('uses_count');
+            }
 
             DB::commit();
 

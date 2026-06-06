@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\DiscordAuthController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -32,6 +33,7 @@ Route::get('/leaderboard', [ServerStatusController::class, 'leaderboard']);
 Route::get('/gallery', [GalleryController::class, 'index']);
 Route::get('/staff', [StaffController::class, 'index']);
 Route::get('/testimonials', [TestimonialController::class, 'index']);
+Route::post('/coupons/validate', [CouponController::class, 'validate']);
 
 // ─── Webhooks (sin auth de usuario pero con validación propia) ───────
 Route::post('/payments/webhook', [PaymentController::class, 'webhook']);
@@ -47,6 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::get('/user/products', [UserController::class, 'products']);
+    Route::get('/user/discord-check', [UserController::class, 'discordCheck']);
+    Route::get('/user/stats', [UserController::class, 'stats']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
@@ -64,8 +68,10 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     Route::apiResource('products', Admin\ProductController::class)
         ->parameters(['products' => 'id'])
         ->except(['show']);
+    Route::get('/orders/export', [Admin\OrderAdminController::class, 'export']);
     Route::get('/orders', [Admin\OrderAdminController::class, 'index']);
     Route::put('/orders/{id}', [Admin\OrderAdminController::class, 'update']);
+    Route::get('/analytics', [Admin\AnalyticsController::class, 'index']);
     Route::get('/users', [Admin\UserAdminController::class, 'index']);
     Route::post('/users/{id}/toggle-admin', [Admin\UserAdminController::class, 'toggleAdmin']);
 
@@ -83,4 +89,9 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     // Testimonios (moderación)
     Route::get('testimonials', [Admin\TestimonialController::class, 'index']);
     Route::put('testimonials/{id}', [Admin\TestimonialController::class, 'update']);
+
+    // Cupones
+    Route::apiResource('coupons', Admin\CouponController::class)
+        ->parameters(['coupons' => 'id'])
+        ->except(['show']);
 });

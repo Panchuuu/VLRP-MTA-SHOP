@@ -41,7 +41,7 @@ export default function AdminProducts() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">Productos</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Productos</h1>
         <button
           onClick={() => setEditing('new')}
           className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
@@ -50,10 +50,10 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      <div className="bg-[#0f0f1a] border border-[#1e1e30] rounded-xl overflow-hidden">
+      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#1e1e30] text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-[#1e1e30] text-slate-500">
               <th className="text-left px-4 py-3">Nombre</th>
               <th className="text-left px-4 py-3">Categoría</th>
               <th className="text-left px-4 py-3">Precio</th>
@@ -71,13 +71,13 @@ export default function AdminProducts() {
               </tr>
             ) : (
               products.map((p) => (
-                <tr key={p.id} className="border-b border-[#1e1e30]/50 hover:bg-[#13132a]">
-                  <td className="px-4 py-3 text-slate-200 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-slate-400">{p.category}</td>
-                  <td className="px-4 py-3 text-green-400">{p.price_formatted}</td>
+                <tr key={p.id} className="border-b border-slate-200 dark:border-[#1e1e30]/50 hover:bg-slate-100 dark:hover:bg-[#13132a]">
+                  <td className="px-4 py-3 text-slate-800 dark:text-slate-200 font-medium">{p.name}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{p.category}</td>
+                  <td className="px-4 py-3 text-green-600 dark:text-green-400">{p.price_formatted}</td>
                   <td className="px-4 py-3">
                     {p.discord_role_id ? (
-                      <span className="text-purple-400 font-mono text-xs">
+                      <span className="text-purple-600 dark:text-purple-400 font-mono text-xs">
                         {p.discord_role_id}
                       </span>
                     ) : (
@@ -88,7 +88,7 @@ export default function AdminProducts() {
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full border ${
                         p.is_active
-                          ? 'bg-green-950/50 text-green-400 border-green-800/50'
+                          ? 'bg-green-950/50 text-green-600 dark:text-green-400 border-green-800/50'
                           : 'bg-slate-800 text-slate-500 border-slate-700'
                       }`}
                     >
@@ -98,7 +98,7 @@ export default function AdminProducts() {
                   <td className="px-4 py-3 flex gap-2">
                     <button
                       onClick={() => setEditing(p)}
-                      className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded border border-[#1e1e30] hover:border-slate-500"
+                      className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 py-1 rounded border border-slate-200 dark:border-[#1e1e30] hover:border-slate-500"
                     >
                       Editar
                     </button>
