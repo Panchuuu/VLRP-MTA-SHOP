@@ -1,7 +1,15 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect, lazy, Suspense } from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+} from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Toaster } from 'react-hot-toast';
 import { useThemeStore } from './store/themeStore';
 import { useAuthStore } from './store/authStore';
+
 import Home from './pages/Home';
 import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
@@ -16,16 +24,99 @@ import Staff from './pages/Staff';
 import Leaderboard from './pages/Leaderboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
-import AdminLayout from './components/admin/AdminLayout';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminProducts from './pages/admin/AdminProducts';
-import AdminOrders from './pages/admin/AdminOrders';
-import AdminUsers from './pages/admin/AdminUsers';
-import AdminGallery from './pages/admin/AdminGallery';
-import AdminStaff from './pages/admin/AdminStaff';
-import AdminTestimonials from './pages/admin/AdminTestimonials';
-import AdminCoupons from './pages/admin/AdminCoupons';
-import AdminAnalytics from './pages/admin/AdminAnalytics';
+
+// ── Admin: lazy (recharts + panel no se cargan para el visitante normal) ──
+const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'));
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
+const AdminGallery = lazy(() => import('./pages/admin/AdminGallery'));
+const AdminStaff = lazy(() => import('./pages/admin/AdminStaff'));
+const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
+const AdminCoupons = lazy(() => import('./pages/admin/AdminCoupons'));
+const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
+
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#080810]">
+      <div className="w-10 h-10 border-[3px] border-purple-600 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/:slug" element={<ProductDetail />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/rules" element={<Rules />} />
+          <Route path="/staff" element={<Staff />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders/success"
+            element={
+              <ProtectedRoute>
+                <OrderSuccess />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin (lazy + Suspense; AdminLayout con <Outlet />) */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <Suspense fallback={<PageLoader />}>
+                  <AdminLayout />
+                </Suspense>
+              </AdminRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="gallery" element={<AdminGallery />} />
+            <Route path="staff" element={<AdminStaff />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+          </Route>
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 export default function App() {
   const initTheme = useThemeStore((s) => s.init);
@@ -43,62 +134,23 @@ export default function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/store/:slug" element={<ProductDetail />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/staff" element={<Staff />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders"
-          element={
-            <ProtectedRoute>
-              <Orders />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/orders/success"
-          element={
-            <ProtectedRoute>
-              <OrderSuccess />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Admin (rutas anidadas con AdminLayout + <Outlet />) */}
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminLayout />
-            </AdminRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="gallery" element={<AdminGallery />} />
-          <Route path="staff" element={<AdminStaff />} />
-          <Route path="testimonials" element={<AdminTestimonials />} />
-          <Route path="coupons" element={<AdminCoupons />} />
-          <Route path="analytics" element={<AdminAnalytics />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <AnimatedRoutes />
+      </BrowserRouter>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: '#0f0f1a',
+            color: '#f1f5f9',
+            border: '1px solid #1e1e30',
+            borderRadius: '12px',
+            fontSize: '14px',
+          },
+          success: { iconTheme: { primary: '#7c3aed', secondary: '#fff' } },
+        }}
+      />
+    </>
   );
 }

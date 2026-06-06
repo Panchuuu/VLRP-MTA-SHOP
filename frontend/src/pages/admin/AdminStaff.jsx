@@ -162,8 +162,8 @@ export default function AdminStaff() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-slate-200 dark:border-[#1e1e30] text-slate-500">
               <th className="text-left px-4 py-3">Miembro</th>
@@ -182,7 +182,7 @@ export default function AdminStaff() {
                 <tr key={m.id} className="border-b border-slate-200 dark:border-[#1e1e30]/50 hover:bg-slate-100 dark:hover:bg-[#13132a]">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={m.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=7c3aed&color=fff`}
                         alt={m.name}
                         className="w-8 h-8 rounded-full"

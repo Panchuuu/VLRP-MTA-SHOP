@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { getProduct } from '../api/products';
 import { useCartStore } from '../store/cartStore';
+import { useAuthStore } from '../store/authStore';
 import Navbar from '../components/Navbar';
 
 export default function ProductDetail() {
@@ -10,6 +12,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
     getProduct(slug)
@@ -19,8 +22,13 @@ export default function ProductDetail() {
   }, [slug]);
 
   const handleAdd = () => {
+    if (!isAuthenticated()) {
+      toast.error('Inicia sesión para comprar');
+      return;
+    }
     addItem(product);
     setAdded(true);
+    toast.success('Agregado al carrito');
     setTimeout(() => setAdded(false), 2000);
   };
 
@@ -58,7 +66,7 @@ export default function ProductDetail() {
           ← Volver a la tienda
         </Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <img
+          <img loading="lazy" decoding="async"
             src={product.image_url}
             alt={product.name}
             className="w-full rounded-xl border border-slate-200 dark:border-[#1e1e30]"

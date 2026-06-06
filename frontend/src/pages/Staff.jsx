@@ -49,7 +49,7 @@ export default function Staff() {
                 className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/40 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(124,58,237,0.1)]"
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={
                       member.avatar_url ||
                       `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=7c3aed&color=fff`

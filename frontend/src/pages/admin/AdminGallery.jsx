@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
 import {
   getAdminGallery,
   uploadGalleryImage,
@@ -33,6 +34,7 @@ export default function AdminGallery() {
     setError('');
     try {
       await uploadGalleryImage(file);
+      toast.success('Imagen subida');
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Error al subir la imagen');
@@ -142,7 +144,7 @@ export default function AdminGallery() {
               key={p.id}
               className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden group relative"
             >
-              <img src={p.image_url} alt={p.title || ''} className="w-full aspect-video object-cover" />
+              <img loading="lazy" decoding="async" src={p.image_url} alt={p.title || ''} className="w-full aspect-video object-cover" />
               <div className="p-2 flex items-center justify-between">
                 <span className="text-xs text-slate-600 dark:text-slate-400 truncate">{p.title || 'Sin título'}</span>
                 <button

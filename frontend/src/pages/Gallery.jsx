@@ -48,7 +48,7 @@ export default function Gallery() {
                 onClick={() => setActive(photo)}
                 className="block w-full break-inside-avoid rounded-xl overflow-hidden border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/50 transition-all group"
               >
-                <img
+                <img loading="lazy" decoding="async"
                   src={photo.image_url}
                   alt={photo.title || 'Foto del servidor'}
                   className="w-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
@@ -77,7 +77,7 @@ export default function Gallery() {
             ×
           </button>
           <div className="max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
-            <img
+            <img loading="lazy" decoding="async"
               src={active.image_url}
               alt={active.title || 'Foto'}
               className="w-full max-h-[80vh] object-contain rounded-xl"

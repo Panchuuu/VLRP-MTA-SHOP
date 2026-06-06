@@ -50,8 +50,8 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-slate-200 dark:border-[#1e1e30] text-slate-500">
               <th className="text-left px-4 py-3">Nombre</th>

@@ -10,5 +10,8 @@ export const MTA_CONNECT_URL = 'mtasa://45.236.90.201:26103';
 // Link de invitación a tu servidor de Discord.
 export const DISCORD_INVITE = 'https://discord.gg/valparaisorp';
 
+// Normativas del servidor (GitBook externo).
+export const RULES_URL = 'https://docs-roleplay.gitbook.io/valparaisoroleplay-mta';
+
 // Año mostrado en el footer.
 export const SITE_YEAR = 2026;

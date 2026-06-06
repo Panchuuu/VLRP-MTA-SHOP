@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useCartStore } from '../store/cartStore';
 import api from '../api/axios';
 
@@ -20,11 +21,15 @@ export default function CouponField() {
       if (data.valid) {
         setCoupon({ ...data, code: code.trim().toUpperCase() });
         setCode('');
+        toast.success('Cupón aplicado: −' + formatCLP(data.discount_amount));
       } else {
         setError(data.message || 'Cupón no válido');
+        toast.error(data.message || 'Cupón no válido');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al validar el cupón');
+      const msg = err.response?.data?.message || 'Error al validar el cupón';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

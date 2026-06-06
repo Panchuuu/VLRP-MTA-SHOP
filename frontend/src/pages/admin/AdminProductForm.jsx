@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { createProduct, updateProduct, getAdminCategories } from '../../api/admin';
 
 const inputCls =
@@ -57,6 +58,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
       };
       if (isEdit) await updateProduct(product.id, payload);
       else await createProduct(payload);
+      toast.success('Producto guardado');
       onSave();
     } catch (err) {
       setError(err.response?.data?.message || 'Error al guardar');

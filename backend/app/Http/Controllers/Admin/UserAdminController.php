@@ -43,7 +43,7 @@ class UserAdminController extends Controller
 
         // No permitir quitarse admin a uno mismo
         if ($user->id === request()->user()->id) {
-            return response()->json(['message' => 'No puedes modificar tu propio rol'], 422);
+            return response()->json(['message' => 'No puedes cambiar tu propio rol de administrador'], 422);
         }
 
         $user->update(['is_admin' => ! $user->is_admin]);

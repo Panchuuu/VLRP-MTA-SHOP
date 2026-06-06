@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 
@@ -8,17 +9,18 @@ export default function ProductCard({ product }) {
 
   const handleAdd = () => {
     if (!isAuthenticated()) {
-      window.location.href = import.meta.env.VITE_DISCORD_LOGIN_URL;
+      toast.error('Inicia sesión para comprar');
       return;
     }
     addItem(product);
+    toast.success('Agregado al carrito');
   };
 
   return (
-    <div className="group bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 flex flex-col">
+    <div className="group bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden shadow-sm hover:border-purple-500/50 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(124,58,237,0.12)] transition-all duration-300 flex flex-col">
       {/* Imagen */}
       <div className="relative overflow-hidden aspect-video">
-        <img
+        <img loading="lazy" decoding="async"
           src={
             product.image_url ||
             'https://placehold.co/400x225/0f0f1a/4b5563?text=Sin+imagen'
@@ -67,7 +69,7 @@ export default function ProductCard({ product }) {
               onClick={handleAdd}
               disabled={!product.in_stock}
               title={!isAuthenticated() ? 'Inicia sesión para comprar' : ''}
-              className="text-xs bg-purple-600 hover:bg-purple-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:text-slate-500 text-white px-3 py-1.5 rounded-lg transition-colors font-medium"
+              className="text-xs bg-purple-600 hover:bg-purple-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:text-slate-500 text-white px-3 py-1.5 rounded-lg transition-transform active:scale-95 font-medium"
             >
               {product.in_stock ? 'Agregar' : 'Agotado'}
             </button>

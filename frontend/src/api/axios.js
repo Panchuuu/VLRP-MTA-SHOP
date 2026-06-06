@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
@@ -21,6 +22,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('auth_token');
       window.location.href = '/';
+    } else if (!error.response) {
+      // Sin respuesta del servidor = error de red.
+      toast.error('Error de conexión');
     }
     return Promise.reject(error);
   }

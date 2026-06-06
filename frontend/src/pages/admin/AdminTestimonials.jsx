@@ -46,7 +46,7 @@ export default function AdminTestimonials() {
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={t.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.author_name)}&background=1e1e30&color=94a3b8`}
                     alt={t.author_name}
                     className="w-7 h-7 rounded-full"

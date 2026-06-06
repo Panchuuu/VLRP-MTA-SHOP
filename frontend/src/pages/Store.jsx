@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { getCategories, getProducts } from '../api/products';
 import ProductCard from '../components/ProductCard';
 import Navbar from '../components/Navbar';
@@ -126,11 +127,24 @@ export default function Store() {
             <p className="text-lg">No se encontraron productos</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+          >
             {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <motion.div
+                key={p.id}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+              >
+                <ProductCard product={p} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* Paginación */}

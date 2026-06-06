@@ -10,7 +10,20 @@ import Navbar from '../components/Navbar';
 import ServerStatusBadge from '../components/ServerStatusBadge';
 import { getGallery, getStaff, getTestimonials } from '../api/community';
 import { getProducts } from '../api/products';
-import { MTA_CONNECT_URL, DISCORD_INVITE, SITE_YEAR } from '../config/site';
+import toast from 'react-hot-toast';
+import { MTA_CONNECT_URL, DISCORD_INVITE, SITE_YEAR, RULES_URL } from '../config/site';
+
+// Intenta abrir MTA:SA; si el protocolo no tiene handler (no instalado),
+// seguimos en la página y avisamos.
+function connectToMta() {
+  const start = Date.now();
+  window.location.href = MTA_CONNECT_URL;
+  setTimeout(() => {
+    if (Date.now() - start < 2000 && !document.hidden) {
+      toast.error('Necesitas tener MTA:SA instalado para conectarte directamente');
+    }
+  }, 1500);
+}
 
 // ── Hook de animación al hacer scroll ────────────────────────────────
 function useScrollReveal() {
@@ -98,12 +111,13 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href={MTA_CONNECT_URL}
-              className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5"
+            <button
+              type="button"
+              onClick={connectToMta}
+              className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 active:scale-95"
             >
               🎮 Conectarse ahora
-            </a>
+            </button>
             <Link
               to="/store"
               className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/50 text-slate-900 dark:text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:-translate-y-0.5"
@@ -112,17 +126,18 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-slate-600">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
+        </div>
+
+        {/* Scroll indicator: hermano del contenido, hijo directo del hero */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-slate-400 dark:text-slate-600 pointer-events-none">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
         </div>
       </div>
 
@@ -201,7 +216,7 @@ export default function Home() {
             {gallery.map((photo) => (
               <SwiperSlide key={photo.id}>
                 <div className="relative aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-[#1e1e30] group">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={photo.image_url}
                     alt={photo.title || 'Foto del servidor'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -241,7 +256,7 @@ export default function Home() {
                 key={member.id}
                 className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/30 rounded-2xl p-5 text-center transition-all duration-300 hover:-translate-y-1"
               >
-                <img
+                <img loading="lazy" decoding="async"
                   src={
                     member.avatar_url ||
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=7c3aed&color=fff`
@@ -292,7 +307,7 @@ export default function Home() {
                   </div>
                   <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed mb-4">"{t.content}"</p>
                   <div className="flex items-center gap-2">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={
                         t.author_avatar ||
                         `https://ui-avatars.com/api/?name=${encodeURIComponent(t.author_name)}&background=1e1e30&color=94a3b8`
@@ -317,12 +332,13 @@ export default function Home() {
             Únete a la comunidad de Valparaíso RP y empieza tu historia hoy.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href={MTA_CONNECT_URL}
-              className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-all hover:shadow-[0_0_30px_rgba(124,58,237,0.4)]"
+            <button
+              type="button"
+              onClick={connectToMta}
+              className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-all hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] active:scale-95"
             >
               🎮 Conectarse al servidor
-            </a>
+            </button>
             <a
               href={DISCORD_INVITE}
               target="_blank"
@@ -347,7 +363,9 @@ export default function Home() {
           <nav className="flex flex-wrap gap-6 text-sm text-slate-500">
             <Link to="/store" className="hover:text-slate-900 dark:hover:text-white transition-colors">Tienda</Link>
             <Link to="/gallery" className="hover:text-slate-900 dark:hover:text-white transition-colors">Galería</Link>
-            <Link to="/rules" className="hover:text-slate-900 dark:hover:text-white transition-colors">Normativas</Link>
+            <a href={RULES_URL} target="_blank" rel="noreferrer" className="hover:text-slate-900 dark:hover:text-white transition-colors">
+              Normativas
+            </a>
             <Link to="/staff" className="hover:text-slate-900 dark:hover:text-white transition-colors">Staff</Link>
             <Link to="/leaderboard" className="hover:text-slate-900 dark:hover:text-white transition-colors">Leaderboard</Link>
             <a

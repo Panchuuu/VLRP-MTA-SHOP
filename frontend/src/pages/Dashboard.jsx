@@ -44,7 +44,7 @@ export default function Dashboard() {
       <div className="max-w-5xl mx-auto px-4 pt-24 pb-16 space-y-6">
         {/* Hero del perfil */}
         <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <img
+          <img loading="lazy" decoding="async"
             src={user?.avatar_url}
             className="w-20 h-20 rounded-full border-2 border-purple-600 flex-shrink-0"
             alt="avatar"
@@ -116,7 +116,7 @@ export default function Dashboard() {
                   key={item.id}
                   className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl p-4 flex items-center gap-3"
                 >
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={item.image_url || 'https://placehold.co/60x60/0f0f1a/7c3aed?text=VIP'}
                     className="w-12 h-12 rounded-lg object-cover"
                     alt={item.name}

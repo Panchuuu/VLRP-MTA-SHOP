@@ -1,7 +1,18 @@
+import { motion } from 'framer-motion';
+
 export default function DiscordGateModal({ inviteUrl, onClose }) {
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4 backdrop-blur-sm">
-      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-2xl p-8 max-w-md w-full text-center shadow-2xl"
+      >
         <div className="text-5xl mb-4">🔒</div>
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white font-display mb-2">
           Únete al Discord primero
@@ -32,7 +43,7 @@ export default function DiscordGateModal({ inviteUrl, onClose }) {
         <p className="text-slate-400 dark:text-slate-600 text-xs mt-4">
           Una vez que te unas, refresca la página y podrás comprar.
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

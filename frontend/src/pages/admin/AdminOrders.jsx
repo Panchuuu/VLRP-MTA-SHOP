@@ -67,8 +67,8 @@ export default function AdminOrders() {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-slate-200 dark:border-[#1e1e30] text-slate-500">
               <th className="text-left px-4 py-3">Usuario</th>
@@ -91,7 +91,7 @@ export default function AdminOrders() {
                 <tr key={o.id} className="border-b border-slate-200 dark:border-[#1e1e30]/50 hover:bg-slate-100 dark:hover:bg-[#13132a]">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <img src={o.user_avatar} alt={o.user} className="w-6 h-6 rounded-full" />
+                      <img loading="lazy" decoding="async" src={o.user_avatar} alt={o.user} className="w-6 h-6 rounded-full" />
                       <span className="text-slate-700 dark:text-slate-300 text-xs">{o.user}</span>
                     </div>
                   </td>

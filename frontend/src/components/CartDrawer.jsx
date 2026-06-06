@@ -84,7 +84,7 @@ export default function CartDrawer({ open, onClose }) {
                 key={item.id}
                 className="flex gap-3 bg-slate-50 dark:bg-[#080810] rounded-lg p-3 border border-slate-200 dark:border-[#1e1e30]"
               >
-                <img
+                <img loading="lazy" decoding="async"
                   src={item.image_url}
                   alt={item.name}
                   className="w-16 h-12 object-cover rounded-md flex-shrink-0"
