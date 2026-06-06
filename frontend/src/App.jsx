@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useThemeStore } from './store/themeStore';
+import { useAuthStore } from './store/authStore';
 import Home from './pages/Home';
 import AuthCallback from './pages/AuthCallback';
 import Dashboard from './pages/Dashboard';
@@ -31,6 +32,15 @@ export default function App() {
   useEffect(() => {
     initTheme();
   }, [initTheme]);
+
+  // Hidratar el user al montar: persist guarda el token pero NO el user, así que
+  // tras recargar disparamos GET /auth/me para que el Navbar muestre el avatar.
+  const fetchUser = useAuthStore((s) => s.fetchUser);
+  const token = useAuthStore((s) => s.token);
+  useEffect(() => {
+    if (token) fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <BrowserRouter>
