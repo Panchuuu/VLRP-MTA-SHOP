@@ -59,6 +59,16 @@ export const getAdminTestimonials = () =>
 export const setTestimonialApproved = (id, approved) =>
   api.put(`/admin/testimonials/${id}`, { is_approved: approved }).then((r) => r.data);
 
+// ─── Reseñas de productos ────────────────────────────────────────────
+export const getAdminReviews = (status = '') =>
+  api
+    .get('/admin/reviews', { params: { status: status || undefined } })
+    .then((r) => r.data.data);
+export const toggleReviewApproved = (id) =>
+  api.put(`/admin/reviews/${id}`).then((r) => r.data);
+export const deleteReview = (id) =>
+  api.delete(`/admin/reviews/${id}`).then((r) => r.data);
+
 // ─── Cupones ─────────────────────────────────────────────────────────
 export const getAdminCoupons = () =>
   api.get('/admin/coupons').then((r) => r.data.data);
@@ -68,6 +78,16 @@ export const updateCoupon = (id, d) =>
   api.put(`/admin/coupons/${id}`, d).then((r) => r.data);
 export const deleteCoupon = (id) =>
   api.delete(`/admin/coupons/${id}`).then((r) => r.data);
+
+// ─── FAQ ─────────────────────────────────────────────────────────────
+export const getAdminFaqs = () =>
+  api.get('/admin/faqs').then((r) => r.data.data);
+export const createFaq = (data) =>
+  api.post('/admin/faqs', data).then((r) => r.data);
+export const updateFaq = (id, d) =>
+  api.put(`/admin/faqs/${id}`, d).then((r) => r.data);
+export const deleteFaq = (id) =>
+  api.delete(`/admin/faqs/${id}`).then((r) => r.data);
 
 // ─── Analytics ───────────────────────────────────────────────────────
 export const getAnalytics = () =>

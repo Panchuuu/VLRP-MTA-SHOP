@@ -25,6 +25,8 @@ class ProductResource extends JsonResource
             'stock' => $this->stock,
             'in_stock' => $this->stock === null || $this->stock > 0,
             'category' => new ProductCategoryResource($this->whenLoaded('category')),
+            'average_rating' => $this->average_rating,
+            'reviews_count' => $this->reviews_count,
             'created_at' => $this->created_at,
         ];
     }

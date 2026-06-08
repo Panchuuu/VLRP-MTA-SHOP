@@ -9,6 +9,8 @@ const links = [
   { to: '/admin/gallery', label: 'Galería', icon: '🖼️' },
   { to: '/admin/staff', label: 'Staff', icon: '🧑‍💼' },
   { to: '/admin/testimonials', label: 'Testimonios', icon: '💬' },
+  { to: '/admin/reviews', label: 'Reseñas', icon: '⭐' },
+  { to: '/admin/faqs', label: 'FAQ', icon: '❓' },
   { to: '/admin/coupons', label: 'Cupones', icon: '🏷️' },
   { to: '/admin/codes', label: 'Códigos', icon: '🎟️' },
   { to: '/admin/analytics', label: 'Analytics', icon: '📈' },

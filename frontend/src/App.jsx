@@ -22,6 +22,7 @@ import Gallery from './pages/Gallery';
 import Rules from './pages/Rules';
 import Staff from './pages/Staff';
 import Leaderboard from './pages/Leaderboard';
+import Faq from './pages/Faq';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -34,6 +35,8 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminGallery = lazy(() => import('./pages/admin/AdminGallery'));
 const AdminStaff = lazy(() => import('./pages/admin/AdminStaff'));
 const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
+const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'));
+const AdminFaqs = lazy(() => import('./pages/admin/AdminFaqs'));
 const AdminCoupons = lazy(() => import('./pages/admin/AdminCoupons'));
 const AdminCodes = lazy(() => import('./pages/admin/AdminCodes'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
@@ -66,6 +69,7 @@ function AnimatedRoutes() {
           <Route path="/rules" element={<Rules />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/faq" element={<Faq />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/dashboard"
@@ -110,6 +114,8 @@ function AnimatedRoutes() {
             <Route path="gallery" element={<AdminGallery />} />
             <Route path="staff" element={<AdminStaff />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="faqs" element={<AdminFaqs />} />
             <Route path="coupons" element={<AdminCoupons />} />
             <Route path="codes" element={<AdminCodes />} />
             <Route path="analytics" element={<AdminAnalytics />} />

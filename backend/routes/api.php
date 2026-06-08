@@ -3,9 +3,11 @@
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\DiscordAuthController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\RedemptionCodeController;
 use App\Http\Controllers\ServerStatusController;
 use App\Http\Controllers\StaffController;
@@ -27,6 +29,7 @@ Route::middleware('throttle:10,1')->group(function () {
 Route::get('/categories', [StoreController::class, 'categories']);
 Route::get('/products', [StoreController::class, 'index']);
 Route::get('/products/{slug}', [StoreController::class, 'show']);
+Route::get('/products/{product}/reviews', [ProductReviewController::class, 'index']);
 
 // ─── Comunidad / servidor (público) ─────────────────────────────────
 Route::get('/server-status', [ServerStatusController::class, 'index']);
@@ -35,6 +38,7 @@ Route::get('/gallery', [GalleryController::class, 'index']);
 Route::get('/staff', [StaffController::class, 'index']);
 Route::get('/testimonials', [TestimonialController::class, 'index']);
 Route::post('/coupons/validate', [CouponController::class, 'validate']);
+Route::get('/faqs', [FaqController::class, 'index']);
 
 // ─── Webhooks (sin auth de usuario pero con validación propia) ───────
 Route::post('/payments/webhook', [PaymentController::class, 'webhook']);
@@ -64,6 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/{id}/codes', [OrderController::class, 'codes']);
 
     Route::post('/testimonials', [TestimonialController::class, 'store']);
+
+    Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store']);
+    Route::get('/products/{product}/can-review', [ProductReviewController::class, 'canReview']);
 });
 
 // ─── Admin ──────────────────────────────────────────────────────────
@@ -97,6 +104,11 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     Route::get('testimonials', [Admin\TestimonialController::class, 'index']);
     Route::put('testimonials/{id}', [Admin\TestimonialController::class, 'update']);
 
+    // Reseñas de productos (moderación)
+    Route::get('reviews', [Admin\ProductReviewController::class, 'index']);
+    Route::put('reviews/{id}', [Admin\ProductReviewController::class, 'update']);
+    Route::delete('reviews/{id}', [Admin\ProductReviewController::class, 'destroy']);
+
     // Cupones
     Route::apiResource('coupons', Admin\CouponController::class)
         ->parameters(['coupons' => 'id'])
@@ -105,4 +117,7 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     // Códigos de canje
     Route::get('codes', [Admin\RedemptionCodeController::class, 'index']);
     Route::post('codes', [Admin\RedemptionCodeController::class, 'store']);
+
+    // FAQ
+    Route::apiResource('faqs', Admin\FaqController::class)->except(['show']);
 });

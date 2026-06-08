@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
+import StarRating from './StarRating';
 
 export default function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem);
@@ -47,6 +48,16 @@ export default function ProductCard({ product }) {
         <h3 className="font-display font-semibold text-slate-900 dark:text-white leading-tight">
           {product.name}
         </h3>
+
+        {/* Estrellas (si hay reseñas) */}
+        {product.reviews_count > 0 && (
+          <div className="flex items-center gap-1.5 -mt-1">
+            <StarRating value={product.average_rating} size="sm" />
+            <span className="text-xs text-slate-400 dark:text-slate-500">
+              ({product.reviews_count})
+            </span>
+          </div>
+        )}
 
         {/* Descripción truncada */}
         <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-2 flex-1">
