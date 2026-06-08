@@ -355,9 +355,7 @@ export default function Home() {
       <footer className="border-t border-slate-200 dark:border-[#1e1e30] py-10 px-4">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <p className="text-slate-900 dark:text-white font-bold text-lg">
-              ⬡ Valparaíso <span className="text-purple-600 dark:text-purple-400">RP</span>
-            </p>
+            <img src="/vlrp-logo.png" alt="Valparaíso RP" className="h-12 w-auto mb-2" />
             <p className="text-slate-600 text-sm mt-1">El roleplay más inmersivo de Chile</p>
           </div>
           <nav className="flex flex-wrap gap-6 text-sm text-slate-500">

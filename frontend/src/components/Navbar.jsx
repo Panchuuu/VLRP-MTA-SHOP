@@ -30,20 +30,15 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#080810]/95 backdrop-blur border-b border-slate-200 dark:border-[#1e1e30]">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 font-display font-bold text-lg text-slate-900 dark:text-white"
-          >
-            <span className="text-purple-500 dark:text-purple-400">⬡</span>
-            <span>
-              Valparaíso <span className="text-purple-500 dark:text-purple-400">RP</span>
-            </span>
+          <Link to="/" className="flex items-center">
+            <img src="/vlrp-logo-nav.png" alt="Valparaíso RP" className="h-10 w-auto" />
           </Link>
 
           {/* Nav links (desktop) */}
           <div className="hidden md:flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
             <Link to="/" className={linkCls}>Inicio</Link>
             <Link to="/store" className={linkCls}>Tienda</Link>
+            <Link to="/faq" className={linkCls}>FAQ</Link>
             {isAuthenticated() && (
               <Link to="/dashboard" className={linkCls}>Mi Cuenta</Link>
             )}
@@ -172,6 +167,7 @@ export default function Navbar() {
               <Link to="/store" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Tienda</Link>
               <Link to="/gallery" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Galería</Link>
               <Link to="/leaderboard" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Leaderboard</Link>
+              <Link to="/faq" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">FAQ</Link>
               {isAuthenticated() && (
                 <Link to="/dashboard" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Mi Cuenta</Link>
               )}
