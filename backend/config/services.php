@@ -55,6 +55,7 @@ return [
         'secret' => env('MTA_SERVER_SECRET'),
         'cache_ttl' => env('MTA_CACHE_TTL', 30),
         'game_port' => env('MTA_GAME_PORT', 26103), // puerto de juego (ASE = +123)
+        'api_secret' => env('MTA_API_SECRET'), // shared secret para las llamadas MTA -> API
     ],
 
 ];

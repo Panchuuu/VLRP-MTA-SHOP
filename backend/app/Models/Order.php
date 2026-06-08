@@ -43,4 +43,9 @@ class Order extends Model
     {
         return $this->hasMany(UserProduct::class);
     }
+
+    public function codes(): HasMany
+    {
+        return $this->hasMany(RedemptionCode::class);
+    }
 }

@@ -36,6 +36,11 @@ class User extends Authenticatable
         return $this->hasMany(UserProduct::class);
     }
 
+    public function codes(): HasMany
+    {
+        return $this->hasMany(RedemptionCode::class);
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         return $this->discord_avatar

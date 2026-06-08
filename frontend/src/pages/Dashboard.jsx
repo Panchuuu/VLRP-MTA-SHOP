@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import Navbar from '../components/Navbar';
 import { useAuthStore } from '../store/authStore';
+import { getUserCodes } from '../api/orders';
 import api from '../api/axios';
 
 function Countdown({ expiresAt }) {
@@ -32,10 +34,12 @@ export default function Dashboard() {
   const { user } = useAuthStore();
   const [stats, setStats] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [codes, setCodes] = useState([]);
 
   useEffect(() => {
     api.get('/user/stats').then((r) => setStats(r.data)).catch(() => {});
     api.get('/user/profile').then((r) => setProfile(r.data)).catch(() => {});
+    getUserCodes().then(setCodes).catch(() => {});
   }, []);
 
   return (
@@ -134,6 +138,63 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Mis códigos */}
+        {codes.length > 0 && (
+          <div>
+            <h2 className="text-lg font-bold font-display text-slate-900 dark:text-white mb-4">
+              Mis códigos VIP
+            </h2>
+            <div className="space-y-2">
+              {codes.map((code) => {
+                const redeemed = code.status === 'redeemed';
+                return (
+                  <div
+                    key={code.id}
+                    className={`bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl p-4 flex items-center justify-between gap-3 ${
+                      redeemed ? 'opacity-60' : ''
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <code className="font-mono font-bold text-purple-600 dark:text-purple-300 break-all">
+                          {code.code}
+                        </code>
+                        {!redeemed && (
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(code.code);
+                              toast.success('Copiado');
+                            }}
+                            className="text-slate-400 hover:text-purple-500 flex-shrink-0"
+                            title="Copiar"
+                          >
+                            📋
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        VIP {code.category}
+                        {redeemed && code.redeemed_at
+                          ? ` · canjeado ${new Date(code.redeemed_at).toLocaleDateString('es-CL')}`
+                          : ''}
+                      </p>
+                    </div>
+                    <span
+                      className={`text-xs px-2.5 py-1 rounded-full border flex-shrink-0 ${
+                        redeemed
+                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-300 dark:border-slate-700'
+                          : 'bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800/50'
+                      }`}
+                    >
+                      {redeemed ? 'Canjeado' : 'Pendiente'}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

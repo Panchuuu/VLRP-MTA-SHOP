@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { getOrder } from '../api/orders';
+import toast from 'react-hot-toast';
+import { getOrder, getOrderCodes } from '../api/orders';
 import Navbar from '../components/Navbar';
 
 export default function OrderSuccess() {
   const [params] = useSearchParams();
   const orderId = params.get('order');
   const [order, setOrder] = useState(null);
+  const [codes, setCodes] = useState([]);
   const [loading, setLoading] = useState(!!orderId);
   const attempts = useRef(0);
 
@@ -18,18 +20,21 @@ export default function OrderSuccess() {
 
     let timer;
     const poll = () => {
-      getOrder(orderId)
-        .then((data) => {
+      Promise.all([getOrder(orderId), getOrderCodes(orderId).catch(() => [])])
+        .then(([data, orderCodes]) => {
           setOrder(data);
+          setCodes(orderCodes || []);
           setLoading(false);
-          // Si sigue pendiente, el webhook aún no confirma: reintentar unas veces.
-          if (data.status === 'pending' && attempts.current < 5) {
+          // Seguir sondeando mientras el pago no confirma O el código (job async) aún no aparece.
+          const needMore =
+            data.status === 'pending' ||
+            (data.status === 'completed' && (orderCodes || []).length === 0);
+          if (needMore && attempts.current < 6) {
             attempts.current += 1;
             timer = setTimeout(poll, 3000);
           }
         })
         // El fetch falló: NO es motivo para decir "orden no encontrada".
-        // Mostramos éxito igual (tenemos el orderId de la URL).
         .catch(() => setLoading(false));
     };
     poll();
@@ -100,6 +105,44 @@ export default function OrderSuccess() {
                 </div>
               )}
             </div>
+
+            {/* Código(s) de canje VIP */}
+            {codes.map((code) => (
+              <div
+                key={code.id}
+                className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 rounded-xl p-5 w-full text-left"
+              >
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                  Tu código de canje{' '}
+                  <span className="text-purple-600 dark:text-purple-300 font-semibold">
+                    {code.category}
+                  </span>
+                  :
+                </p>
+                <div className="flex items-center gap-2">
+                  <code className="font-mono text-lg font-bold text-purple-600 dark:text-purple-300 break-all">
+                    {code.code}
+                  </code>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(code.code);
+                      toast.success('Copiado');
+                    }}
+                    className="text-slate-400 hover:text-purple-500 flex-shrink-0"
+                    title="Copiar"
+                  >
+                    📋
+                  </button>
+                </div>
+                <p className="text-xs text-slate-500 mt-3">
+                  Entra al servidor y escribe{' '}
+                  <code className="text-purple-500 dark:text-purple-400">
+                    /canjearvip {code.code}
+                  </code>{' '}
+                  para reclamar tu VIP. También te lo enviamos por Discord.
+                </p>
+              </div>
+            ))}
 
             <div className="flex gap-3 mt-2">
               <Link

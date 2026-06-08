@@ -35,6 +35,7 @@ const AdminGallery = lazy(() => import('./pages/admin/AdminGallery'));
 const AdminStaff = lazy(() => import('./pages/admin/AdminStaff'));
 const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'));
 const AdminCoupons = lazy(() => import('./pages/admin/AdminCoupons'));
+const AdminCodes = lazy(() => import('./pages/admin/AdminCodes'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 
 function PageLoader() {
@@ -110,6 +111,7 @@ function AnimatedRoutes() {
             <Route path="staff" element={<AdminStaff />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="codes" element={<AdminCodes />} />
             <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
         </Routes>

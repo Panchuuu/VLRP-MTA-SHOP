@@ -137,4 +137,15 @@ class OrderController extends Controller
 
         return response()->json(new OrderResource($order));
     }
+
+    public function codes(Request $request, string $id): JsonResponse
+    {
+        $order = $request->user()->orders()->findOrFail($id);
+
+        $codes = $order->codes()
+            ->latest()
+            ->get(['id', 'code', 'category', 'status']);
+
+        return response()->json(['data' => $codes]);
+    }
 }

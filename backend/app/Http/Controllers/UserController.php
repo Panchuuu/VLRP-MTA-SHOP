@@ -51,6 +51,16 @@ class UserController extends Controller
         return response()->json(['data' => $products]);
     }
 
+    public function codes(Request $request): JsonResponse
+    {
+        $codes = $request->user()
+            ->codes()
+            ->latest()
+            ->get(['id', 'code', 'category', 'status', 'redeemed_at', 'created_at']);
+
+        return response()->json(['data' => $codes]);
+    }
+
     public function discordCheck(Request $request): JsonResponse
     {
         $user = $request->user();

@@ -73,6 +73,16 @@ export const deleteCoupon = (id) =>
 export const getAnalytics = () =>
   api.get('/admin/analytics').then((r) => r.data.data);
 
+// ─── Códigos de canje ────────────────────────────────────────────────
+export const getAdminCodes = (status = '', category = '') =>
+  api
+    .get('/admin/codes', {
+      params: { status: status || undefined, category: category || undefined },
+    })
+    .then((r) => r.data.data);
+export const createCodes = (category, quantity) =>
+  api.post('/admin/codes', { category, quantity }).then((r) => r.data.data);
+
 // Descarga el CSV de órdenes (con el token de auth vía axios).
 export const exportOrders = () =>
   api.get('/admin/orders/export', { responseType: 'blob' }).then((r) => {

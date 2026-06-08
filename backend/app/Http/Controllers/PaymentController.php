@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\AssignDiscordRole;
 use App\Jobs\AssignMtaItem;
+use App\Jobs\GenerateRedemptionCode;
 use App\Models\Order;
 use App\Models\UserProduct;
 use App\Services\FlowService;
@@ -111,6 +112,9 @@ class PaymentController extends Controller
                     ->onQueue('default');
             }
         }
+
+        // Generar código(s) VIP canjeable(s) + DM de Discord (el job filtra por game_category).
+        GenerateRedemptionCode::dispatch($order)->onQueue('default');
     }
 
     private function handleFailed(Order $order): void

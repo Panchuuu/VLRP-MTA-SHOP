@@ -8,3 +8,9 @@ export const getOrders = (page = 1) =>
 
 export const getOrder = (id) =>
   api.get(`/orders/${id}`).then((r) => r.data.data);
+
+export const getOrderCodes = (id) =>
+  api.get(`/orders/${id}/codes`).then((r) => r.data.data);
+
+export const getUserCodes = () =>
+  api.get('/user/codes').then((r) => r.data.data);

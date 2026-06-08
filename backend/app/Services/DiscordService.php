@@ -45,6 +45,33 @@ class DiscordService
     }
 
     /**
+     * Sends a DM to a user: opens a DM channel then posts the embed.
+     */
+    public function sendDirectMessage(string $discordUserId, array $embed): bool
+    {
+        try {
+            $dm = $this->client()->post('/users/@me/channels', [
+                'recipient_id' => $discordUserId,
+            ]);
+
+            if (! $dm->ok()) {
+                return false;
+            }
+            $channelId = $dm->json('id');
+
+            $msg = $this->client()->post("/channels/{$channelId}/messages", [
+                'embeds' => [$embed],
+            ]);
+
+            return $msg->ok();
+        } catch (\Throwable $e) {
+            Log::warning('Discord DM failed: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
      * Removes a guild role from a member. Returns true on success (204).
      */
     public function removeRole(string $discordId, string $roleId): bool

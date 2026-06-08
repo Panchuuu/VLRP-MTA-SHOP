@@ -6,6 +6,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\RedemptionCodeController;
 use App\Http\Controllers\ServerStatusController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StoreController;
@@ -42,6 +43,10 @@ Route::post('/payments/webhook', [PaymentController::class, 'webhook']);
 // al frontend con GET para evitar el 404 del SPA.
 Route::match(['get', 'post'], '/payments/return', [PaymentController::class, 'return']);
 
+// ─── Códigos VIP (llamadas desde MTA, protegidas por MTA_API_SECRET) ──
+Route::post('/codes/redeem', [RedemptionCodeController::class, 'redeem']);
+Route::post('/codes/create', [RedemptionCodeController::class, 'createManual']);
+
 // ─── Rutas autenticadas ─────────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [DiscordAuthController::class, 'logout']);
@@ -51,10 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/products', [UserController::class, 'products']);
     Route::get('/user/discord-check', [UserController::class, 'discordCheck']);
     Route::get('/user/stats', [UserController::class, 'stats']);
+    Route::get('/user/codes', [UserController::class, 'codes']);
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::get('/orders/{id}/codes', [OrderController::class, 'codes']);
 
     Route::post('/testimonials', [TestimonialController::class, 'store']);
 });
@@ -94,4 +101,8 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     Route::apiResource('coupons', Admin\CouponController::class)
         ->parameters(['coupons' => 'id'])
         ->except(['show']);
+
+    // Códigos de canje
+    Route::get('codes', [Admin\RedemptionCodeController::class, 'index']);
+    Route::post('codes', [Admin\RedemptionCodeController::class, 'store']);
 });

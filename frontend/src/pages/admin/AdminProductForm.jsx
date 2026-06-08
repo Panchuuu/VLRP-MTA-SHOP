@@ -32,6 +32,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
     is_recurring: product?.is_recurring ?? false,
     image_url: product?.image_url ?? '',
     discord_role_id: product?.discord_role_id ?? '',
+    game_category: product?.game_category ?? '',
     mta_command: product?.mta_command ?? '',
     sort_order: product?.sort_order ?? 0,
     is_active: product?.is_active ?? true,
@@ -53,6 +54,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
         sort_order: parseInt(form.sort_order) || 0,
         duration_days: form.duration_days ? parseInt(form.duration_days) : null,
         discord_role_id: form.discord_role_id.trim() || null,
+        game_category: form.game_category || null,
         mta_command: form.mta_command.trim() || null,
         image_url: form.image_url.trim() || null,
       };
@@ -156,6 +158,26 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
             onChange={(e) => set('discord_role_id', e.target.value)}
             placeholder="1234567890123456789"
           />
+        </Field>
+
+        <Field
+          label="Categoría de juego (VIP)"
+          hint="Si se setea, al comprar este producto se genera un código canjeable in-game de esta categoría. Dejar vacío si no es un VIP."
+        >
+          <select
+            className={inputCls}
+            value={form.game_category}
+            onChange={(e) => set('game_category', e.target.value)}
+          >
+            <option value="">— Ninguna (no genera código) —</option>
+            {['Bronce', 'Plata', 'Oro', 'Diamante', 'Valparaiso', 'Max', 'Boost', 'Streamer'].map(
+              (c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              )
+            )}
+          </select>
         </Field>
 
         <Field

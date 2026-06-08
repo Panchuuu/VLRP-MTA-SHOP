@@ -10,6 +10,7 @@ const links = [
   { to: '/admin/staff', label: 'Staff', icon: '🧑‍💼' },
   { to: '/admin/testimonials', label: 'Testimonios', icon: '💬' },
   { to: '/admin/coupons', label: 'Cupones', icon: '🏷️' },
+  { to: '/admin/codes', label: 'Códigos', icon: '🎟️' },
   { to: '/admin/analytics', label: 'Analytics', icon: '📈' },
 ];
 
