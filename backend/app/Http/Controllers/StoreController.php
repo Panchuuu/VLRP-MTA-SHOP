@@ -31,13 +31,26 @@ class StoreController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('name', 'ilike', '%' . $request->search . '%');
+            $term = $request->search;
+            $query->where(fn ($q) => $q->where('name', 'ilike', "%{$term}%")
+                ->orWhere('description', 'ilike', "%{$term}%"));
         }
 
-        $products = $query
-            ->orderBy('sort_order')
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', (float) $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', (float) $request->max_price);
+        }
+
+        match ($request->get('sort', 'newest')) {
+            'price_asc' => $query->orderBy('price', 'asc'),
+            'price_desc' => $query->orderBy('price', 'desc'),
+            'name' => $query->orderBy('name', 'asc'),
+            default => $query->orderBy('sort_order')->orderBy('created_at', 'desc'),
+        };
+
+        $products = $query->paginate(12)->withQueryString();
 
         return ProductResource::collection($products);
     }

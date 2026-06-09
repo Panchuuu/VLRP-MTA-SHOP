@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { createProduct, updateProduct, getAdminCategories } from '../../api/admin';
+import { BADGE_OPTIONS } from '../../config/badges';
 
 const inputCls =
   'w-full bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none';
@@ -33,6 +34,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
     image_url: product?.image_url ?? '',
     discord_role_id: product?.discord_role_id ?? '',
     game_category: product?.game_category ?? '',
+    badge: product?.badge ?? '',
     mta_command: product?.mta_command ?? '',
     sort_order: product?.sort_order ?? 0,
     is_active: product?.is_active ?? true,
@@ -55,6 +57,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
         duration_days: form.duration_days ? parseInt(form.duration_days) : null,
         discord_role_id: form.discord_role_id.trim() || null,
         game_category: form.game_category || null,
+        badge: form.badge || null,
         mta_command: form.mta_command.trim() || null,
         image_url: form.image_url.trim() || null,
       };
@@ -177,6 +180,20 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
                 </option>
               )
             )}
+          </select>
+        </Field>
+
+        <Field label="Badge destacado" hint="Etiqueta que se muestra sobre la imagen del producto.">
+          <select
+            className={inputCls}
+            value={form.badge}
+            onChange={(e) => set('badge', e.target.value)}
+          >
+            {BADGE_OPTIONS.map((b) => (
+              <option key={b.value} value={b.value}>
+                {b.label}
+              </option>
+            ))}
           </select>
         </Field>
 

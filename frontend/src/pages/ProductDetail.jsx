@@ -7,6 +7,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import Navbar from '../components/Navbar';
 import StarRating from '../components/StarRating';
+import { BADGES } from '../config/badges';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -97,11 +98,22 @@ export default function ProductDetail() {
           ← Volver a la tienda
         </Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <img loading="lazy" decoding="async"
-            src={product.image_url}
-            alt={product.name}
-            className="w-full rounded-xl border border-slate-200 dark:border-[#1e1e30]"
-          />
+          <div className="relative">
+            <img
+              loading="lazy"
+              decoding="async"
+              src={product.image_url}
+              alt={product.name}
+              className="w-full rounded-xl border border-slate-200 dark:border-[#1e1e30]"
+            />
+            {product.badge && BADGES[product.badge] && (
+              <span
+                className={`absolute top-3 left-3 text-white text-xs font-bold font-display px-2.5 py-1 rounded-full ${BADGES[product.badge].className}`}
+              >
+                {BADGES[product.badge].label}
+              </span>
+            )}
+          </div>
           <div className="space-y-4">
             <span className="text-xs bg-purple-950/60 text-purple-300 border border-purple-800/50 px-2 py-1 rounded-full">
               {product.category?.name}
