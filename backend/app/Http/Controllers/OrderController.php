@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\FlowService;
+use App\Services\OrderFulfillmentService;
+use App\Services\WalletService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,6 +39,7 @@ class OrderController extends Controller
             'email' => 'required|email|max:200',
             'coupon_id' => 'nullable|uuid|exists:coupons,id',
             'discount_amount' => 'nullable|numeric|min:0',
+            'payment_method' => 'nullable|in:flow,wallet',
         ]);
 
         // Cargar productos desde DB (nunca confiar en precios del cliente)
@@ -70,11 +73,17 @@ class OrderController extends Controller
         }
 
         $finalTotal = max(0, $total - $discountAmount);
+        $method = $request->input('payment_method', 'flow');
+        $user = $request->user();
+
+        // Pago con saldo: verificar saldo suficiente antes de crear la orden.
+        if ($method === 'wallet' && (float) $user->wallet_balance < $finalTotal) {
+            return response()->json(['message' => 'Saldo insuficiente'], 422);
+        }
 
         DB::beginTransaction();
         try {
             // Guardar el email en el perfil si el usuario no lo tenía
-            $user = $request->user();
             if (empty($user->email)) {
                 $user->update(['email' => $validated['email']]);
             }
@@ -87,7 +96,7 @@ class OrderController extends Controller
                 'discount_amount' => $discountAmount,
                 'total' => $finalTotal,
                 'coupon_id' => $couponId,
-                'payment_method' => 'flow',
+                'payment_method' => $method,
             ]);
 
             foreach ($validated['items'] as $item) {
@@ -100,6 +109,32 @@ class OrderController extends Controller
                 ]);
             }
 
+            // Incrementar el uso del cupón
+            if ($order->coupon_id) {
+                Coupon::where('id', $order->coupon_id)->increment('uses_count');
+            }
+
+            // ── Pago con saldo: debitar, completar y entregar al instante ──
+            if ($method === 'wallet') {
+                app(WalletService::class)->debit(
+                    $user,
+                    (float) $finalTotal,
+                    'purchase',
+                    'Compra orden #' . strtoupper(substr($order->id, -8)),
+                    $order->id
+                );
+                $order->update(['status' => 'completed', 'payment_metadata' => ['paid_with' => 'wallet']]);
+                app(OrderFulfillmentService::class)->fulfill($order);
+
+                DB::commit();
+
+                return response()->json([
+                    'order_id' => $order->id,
+                    'paid' => true,
+                ], 201);
+            }
+
+            // ── Pago con Flow ──
             $flow = new FlowService();
             $result = $flow->createPayment($order, $validated['email']);
 
@@ -107,11 +142,6 @@ class OrderController extends Controller
                 'payment_id' => (string) $result['flow_order'],
                 'payment_metadata' => ['flow_token' => $result['token']],
             ]);
-
-            // Incrementar el uso del cupón
-            if ($order->coupon_id) {
-                Coupon::where('id', $order->coupon_id)->increment('uses_count');
-            }
 
             DB::commit();
 
@@ -121,6 +151,9 @@ class OrderController extends Controller
                 'flow_order' => $result['flow_order'],
             ], 201);
 
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            DB::rollBack();
+            throw $e; // ej: 422 saldo insuficiente (carrera)
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Order creation failed: ' . $e->getMessage());

@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class WalletTransaction extends Model
+{
+    use HasUuids;
+
+    protected $fillable = [
+        'user_id', 'type', 'amount', 'balance_after',
+        'description', 'order_id', 'flow_token', 'status',
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'balance_after' => 'decimal:2',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}

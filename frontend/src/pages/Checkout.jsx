@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { createOrder } from '../api/orders';
+import { getWallet } from '../api/wallet';
 import Navbar from '../components/Navbar';
 
 export default function Checkout() {
@@ -13,6 +14,17 @@ export default function Checkout() {
   const [email, setEmail] = useState(user?.email || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [payMethod, setPayMethod] = useState('flow');
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      getWallet().then((d) => setWalletBalance(d.wallet_balance)).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const canUseWallet = walletBalance >= getTotal();
 
   if (!isAuthenticated()) {
     return (
@@ -56,12 +68,18 @@ export default function Checkout() {
     setError('');
     try {
       const payload = items.map((i) => ({ product_id: i.id, quantity: i.quantity }));
-      const extra = coupon
-        ? { coupon_id: coupon.coupon_id, discount_amount: getDiscount() }
-        : {};
+      const extra = { payment_method: payMethod };
+      if (coupon) {
+        extra.coupon_id = coupon.coupon_id;
+        extra.discount_amount = getDiscount();
+      }
       const data = await createOrder(payload, email.trim(), extra);
       clearCart();
-      window.location.href = data.redirect_url;
+      if (payMethod === 'wallet') {
+        navigate(`/orders/success?order=${data.order_id}`);
+      } else {
+        window.location.href = data.redirect_url;
+      }
     } catch (err) {
       setError(
         err.response?.data?.message || 'Error al procesar el pago. Intenta de nuevo.'
@@ -135,6 +153,43 @@ export default function Checkout() {
           )}
         </div>
 
+        {/* Método de pago */}
+        <div className="mb-5 space-y-2">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-1.5">Método de pago</p>
+          <button
+            type="button"
+            onClick={() => setPayMethod('flow')}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 transition-colors ${
+              payMethod === 'flow'
+                ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
+                : 'border-slate-200 dark:border-[#1e1e30]'
+            }`}
+          >
+            <span className="text-sm font-medium text-slate-900 dark:text-white">
+              💳 Pagar con Flow
+            </span>
+            <span className="text-xs text-slate-500">Webpay / tarjeta</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => canUseWallet && setPayMethod('wallet')}
+            disabled={!canUseWallet}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              payMethod === 'wallet'
+                ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
+                : 'border-slate-200 dark:border-[#1e1e30]'
+            }`}
+          >
+            <span className="text-sm font-medium text-slate-900 dark:text-white">
+              💰 Pagar con saldo
+            </span>
+            <span className="text-xs text-slate-500">
+              Tienes {formatCLP(walletBalance)}
+              {!canUseWallet && ' (insuficiente)'}
+            </span>
+          </button>
+        </div>
+
         {error && (
           <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 rounded-lg px-4 py-3 text-sm mb-4">
             {error}
@@ -144,22 +199,21 @@ export default function Checkout() {
         <button
           onClick={handlePay}
           disabled={loading || !email.trim()}
-          className="w-full bg-white dark:bg-[#1a1a2e] border-2 border-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 dark:text-white font-semibold py-4 rounded-xl text-base transition-colors flex items-center justify-center gap-3"
+          className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl text-base transition-colors flex items-center justify-center gap-3"
         >
           {loading ? (
-            <span className="animate-spin w-5 h-5 border-2 border-purple-600 dark:border-white border-t-transparent rounded-full" />
+            <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full" />
+          ) : payMethod === 'wallet' ? (
+            <>💰 Pagar con saldo {formatCLP(getTotal())}</>
           ) : (
-            <>
-              <span className="text-purple-600 dark:text-purple-400 font-bold text-lg font-display">
-                flow
-              </span>
-              Pagar {formatCLP(getTotal())}
-            </>
+            <>💳 Pagar con Flow {formatCLP(getTotal())}</>
           )}
         </button>
 
         <p className="text-center text-xs text-slate-400 dark:text-slate-600 mt-4">
-          Serás redirigido a Flow para completar el pago con Webpay, crédito o débito
+          {payMethod === 'wallet'
+            ? 'Se descontará de tu saldo y la compra se completará al instante.'
+            : 'Serás redirigido a Flow para completar el pago con Webpay, crédito o débito.'}
         </p>
       </div>
     </div>

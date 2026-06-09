@@ -87,6 +87,18 @@ class FlowService
     }
 
     /**
+     * Crea un pago Flow genérico (ej: recarga de billetera). Recibe
+     * commerceOrder/subject/amount/email/urlConfirmation/urlReturn.
+     * Retorna el resultado crudo de Flow: ['flowOrder', 'token', 'url', ...].
+     */
+    public function createRawPayment(array $params): array
+    {
+        return $this->callApi('/payment/create', array_merge([
+            'currency' => 'CLP',
+        ], $params));
+    }
+
+    /**
      * Obtiene el estado de un pago por token.
      * status: 1=pendiente, 2=pagado, 3=rechazado, 4=anulado
      */

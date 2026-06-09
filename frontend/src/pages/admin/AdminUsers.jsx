@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { getAdminUsers, toggleAdmin } from '../../api/admin';
+import { getAdminUsers, toggleAdmin, adjustUserWallet } from '../../api/admin';
+
+const clp = (n) => '$' + new Intl.NumberFormat('es-CL').format(n || 0);
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -37,6 +39,27 @@ export default function AdminUsers() {
     }
   };
 
+  const handleAdjust = async (u) => {
+    const raw = prompt(
+      `Ajustar saldo de ${u.username} (actual: ${clp(u.wallet_balance)}).\n` +
+        'Monto a sumar (positivo) o restar (negativo):'
+    );
+    if (raw === null) return;
+    const amount = parseFloat(raw);
+    if (!amount || isNaN(amount)) {
+      toast.error('Monto inválido');
+      return;
+    }
+    const reason = prompt('Motivo (opcional):') || '';
+    try {
+      await adjustUserWallet(u.id, amount, reason);
+      toast.success('Saldo ajustado');
+      load();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'No se pudo ajustar el saldo');
+    }
+  };
+
   return (
     <div className="p-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -59,6 +82,7 @@ export default function AdminUsers() {
               <th className="text-left px-4 py-3">Discord ID</th>
               <th className="text-left px-4 py-3">Email</th>
               <th className="text-left px-4 py-3">Órdenes</th>
+              <th className="text-left px-4 py-3">Saldo</th>
               <th className="text-left px-4 py-3">Registrado</th>
               <th className="text-left px-4 py-3">Admin</th>
             </tr>
@@ -66,7 +90,7 @@ export default function AdminUsers() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-slate-600">
+                <td colSpan={7} className="px-4 py-8 text-center text-slate-600">
                   Cargando...
                 </td>
               </tr>
@@ -86,6 +110,19 @@ export default function AdminUsers() {
                   <td className="px-4 py-3 text-slate-500 font-mono text-xs">{u.discord_id}</td>
                   <td className="px-4 py-3 text-slate-500 text-xs">{u.email || '—'}</td>
                   <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{u.orders_count}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-green-600 dark:text-green-400 font-medium text-xs">
+                        {clp(u.wallet_balance)}
+                      </span>
+                      <button
+                        onClick={() => handleAdjust(u)}
+                        className="text-[11px] px-2 py-0.5 rounded border border-slate-200 dark:border-[#1e1e30] text-slate-500 hover:text-purple-500 hover:border-purple-500/50 transition-colors"
+                      >
+                        Ajustar
+                      </button>
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-slate-500 text-xs">{u.joined}</td>
                   <td className="px-4 py-3">
                     <button

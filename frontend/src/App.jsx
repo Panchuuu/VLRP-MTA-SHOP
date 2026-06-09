@@ -24,6 +24,7 @@ import Staff from './pages/Staff';
 import Leaderboard from './pages/Leaderboard';
 import Faq from './pages/Faq';
 import Vips from './pages/Vips';
+import Wallet from './pages/Wallet';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -87,6 +88,14 @@ function AnimatedRoutes() {
             element={
               <ProtectedRoute>
                 <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/wallet"
+            element={
+              <ProtectedRoute>
+                <Wallet />
               </ProtectedRoute>
             }
           />

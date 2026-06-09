@@ -123,6 +123,9 @@ export default function Navbar() {
                     <Link to="/orders" className="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1a1a2e]" onClick={() => setMenuOpen(false)}>
                       Mis Órdenes
                     </Link>
+                    <Link to="/wallet" className="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1a1a2e]" onClick={() => setMenuOpen(false)}>
+                      💰 Billetera
+                    </Link>
                     <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-slate-100 dark:hover:bg-[#1a1a2e]">
                       Cerrar Sesión
                     </button>

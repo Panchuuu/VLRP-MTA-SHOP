@@ -15,6 +15,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Auth ───────────────────────────────────────────────────────────
@@ -53,6 +54,10 @@ Route::match(['get', 'post'], '/payments/return', [PaymentController::class, 're
 Route::post('/codes/redeem', [RedemptionCodeController::class, 'redeem']);
 Route::post('/codes/create', [RedemptionCodeController::class, 'createManual']);
 
+// ─── Billetera: webhook/return de Flow (públicos, validación propia) ──
+Route::post('/wallet/webhook', [WalletController::class, 'webhook']);
+Route::match(['get', 'post'], '/wallet/return', [WalletController::class, 'return']);
+
 // ─── Rutas autenticadas ─────────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [DiscordAuthController::class, 'logout']);
@@ -74,6 +79,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store']);
     Route::get('/products/{product}/can-review', [ProductReviewController::class, 'canReview']);
+
+    // Billetera
+    Route::get('/wallet', [WalletController::class, 'index']);
+    Route::post('/wallet/topup', [WalletController::class, 'topup']);
 
     // Notificaciones in-app
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -103,6 +112,7 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     Route::get('/analytics', [Admin\AnalyticsController::class, 'index']);
     Route::get('/users', [Admin\UserAdminController::class, 'index']);
     Route::post('/users/{id}/toggle-admin', [Admin\UserAdminController::class, 'toggleAdmin']);
+    Route::post('/users/{id}/wallet-adjust', [Admin\UserAdminController::class, 'adjustWallet']);
 
     // Galería (con subida de archivo)
     Route::post('gallery/upload', [Admin\GalleryController::class, 'upload']);

@@ -23,6 +23,10 @@ export const getAdminUsers = (p = 1, search = '') =>
     .then((r) => r.data);
 export const toggleAdmin = (id) =>
   api.post(`/admin/users/${id}/toggle-admin`).then((r) => r.data);
+export const adjustUserWallet = (id, amount, reason) =>
+  api
+    .post(`/admin/users/${id}/wallet-adjust`, { amount, reason })
+    .then((r) => r.data);
 
 // ─── Galería ─────────────────────────────────────────────────────────
 export const getAdminGallery = () =>

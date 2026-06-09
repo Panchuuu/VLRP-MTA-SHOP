@@ -13,7 +13,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'discord_id', 'discord_username', 'discord_discriminator',
-        'discord_avatar', 'email', 'discord_access_token', 'discord_refresh_token',
+        'discord_avatar', 'email', 'wallet_balance', 'discord_access_token', 'discord_refresh_token',
         'discord_token_expires_at', 'is_admin',
     ];
 
@@ -24,6 +24,7 @@ class User extends Authenticatable
     protected $casts = [
         'discord_token_expires_at' => 'datetime',
         'is_admin' => 'boolean',
+        'wallet_balance' => 'decimal:2',
     ];
 
     public function orders(): HasMany
@@ -39,6 +40,11 @@ class User extends Authenticatable
     public function codes(): HasMany
     {
         return $this->hasMany(RedemptionCode::class);
+    }
+
+    public function walletTransactions(): HasMany
+    {
+        return $this->hasMany(WalletTransaction::class)->latest();
     }
 
     public function notifications(): HasMany
