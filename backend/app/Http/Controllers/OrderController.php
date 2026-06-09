@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\FlowService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -147,5 +148,29 @@ class OrderController extends Controller
             ->get(['id', 'code', 'category', 'status']);
 
         return response()->json(['data' => $codes]);
+    }
+
+    /**
+     * Comprobante de compra en PDF (solo el dueño, solo órdenes completadas).
+     */
+    public function receipt(Request $request, string $id)
+    {
+        $order = Order::with('items.product', 'user', 'coupon')
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if ($order->user_id !== $request->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
+        if ($order->status !== 'completed') {
+            return response()->json([
+                'message' => 'El recibo solo está disponible para órdenes completadas',
+            ], 422);
+        }
+
+        $pdf = Pdf::loadView('receipts.order', ['order' => $order])->setPaper('a4');
+
+        return $pdf->download("recibo-{$order->id}.pdf");
     }
 }

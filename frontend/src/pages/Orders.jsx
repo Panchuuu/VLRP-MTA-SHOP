@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getOrders } from '../api/orders';
+import toast from 'react-hot-toast';
+import { getOrders, downloadReceipt } from '../api/orders';
 import Navbar from '../components/Navbar';
+
+async function handleReceipt(orderId) {
+  try {
+    await downloadReceipt(orderId);
+  } catch {
+    toast.error('No se pudo descargar el recibo');
+  }
+}
 
 const STATUS_STYLES = {
   pending: 'bg-yellow-950/60 text-yellow-300 border-yellow-800/50',
@@ -107,6 +116,17 @@ export default function Orders() {
                     {order.total_formatted}
                   </span>
                 </div>
+
+                {order.status === 'completed' && (
+                  <div className="mt-3 text-right">
+                    <button
+                      onClick={() => handleReceipt(order.id)}
+                      className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
+                    >
+                      📄 Descargar recibo
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

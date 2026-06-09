@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { getOrder, getOrderCodes } from '../api/orders';
+import { getOrder, getOrderCodes, downloadReceipt } from '../api/orders';
 import Navbar from '../components/Navbar';
 
 export default function OrderSuccess() {
@@ -143,6 +143,21 @@ export default function OrderSuccess() {
                 </p>
               </div>
             ))}
+
+            {order?.status === 'completed' && (
+              <button
+                onClick={async () => {
+                  try {
+                    await downloadReceipt(order.id);
+                  } catch {
+                    toast.error('No se pudo descargar el recibo');
+                  }
+                }}
+                className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
+              >
+                📄 Descargar recibo
+              </button>
+            )}
 
             <div className="flex gap-3 mt-2">
               <Link
