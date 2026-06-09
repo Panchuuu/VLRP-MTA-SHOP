@@ -8,3 +8,6 @@ export const getProducts = (params = {}) =>
 
 export const getProduct = (slug) =>
   api.get(`/products/${slug}`).then((r) => r.data.data);
+
+export const getVipComparison = () =>
+  api.get('/vip-comparison').then((r) => r.data);

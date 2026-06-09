@@ -23,6 +23,7 @@ import Rules from './pages/Rules';
 import Staff from './pages/Staff';
 import Leaderboard from './pages/Leaderboard';
 import Faq from './pages/Faq';
+import Vips from './pages/Vips';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -39,6 +40,7 @@ const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'));
 const AdminFaqs = lazy(() => import('./pages/admin/AdminFaqs'));
 const AdminCoupons = lazy(() => import('./pages/admin/AdminCoupons'));
 const AdminCodes = lazy(() => import('./pages/admin/AdminCodes'));
+const AdminComparison = lazy(() => import('./pages/admin/AdminComparison'));
 const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'));
 
 function PageLoader() {
@@ -70,6 +72,7 @@ function AnimatedRoutes() {
           <Route path="/staff" element={<Staff />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/faq" element={<Faq />} />
+          <Route path="/vips" element={<Vips />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/dashboard"
@@ -118,6 +121,7 @@ function AnimatedRoutes() {
             <Route path="faqs" element={<AdminFaqs />} />
             <Route path="coupons" element={<AdminCoupons />} />
             <Route path="codes" element={<AdminCodes />} />
+            <Route path="comparison" element={<AdminComparison />} />
             <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
         </Routes>

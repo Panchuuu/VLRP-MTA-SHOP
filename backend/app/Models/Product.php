@@ -46,6 +46,11 @@ class Product extends Model
         return $this->hasMany(UserProduct::class);
     }
 
+    public function featureValues(): HasMany
+    {
+        return $this->hasMany(ProductFeatureValue::class);
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(ProductReview::class)->where('is_approved', true);

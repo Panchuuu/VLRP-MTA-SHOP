@@ -89,6 +89,20 @@ export const updateFaq = (id, d) =>
 export const deleteFaq = (id) =>
   api.delete(`/admin/faqs/${id}`).then((r) => r.data);
 
+// ─── Comparador VIP ──────────────────────────────────────────────────
+export const getComparisonFeatures = () =>
+  api.get('/admin/comparison-features').then((r) => r.data.data);
+export const createComparisonFeature = (data) =>
+  api.post('/admin/comparison-features', data).then((r) => r.data);
+export const updateComparisonFeature = (id, d) =>
+  api.put(`/admin/comparison-features/${id}`, d).then((r) => r.data);
+export const deleteComparisonFeature = (id) =>
+  api.delete(`/admin/comparison-features/${id}`).then((r) => r.data);
+export const getProductFeatures = (id) =>
+  api.get(`/admin/products/${id}/features`).then((r) => r.data);
+export const updateProductFeatures = (id, values) =>
+  api.put(`/admin/products/${id}/features`, { values }).then((r) => r.data);
+
 // ─── Analytics ───────────────────────────────────────────────────────
 export const getAnalytics = () =>
   api.get('/admin/analytics').then((r) => r.data.data);

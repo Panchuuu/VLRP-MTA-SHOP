@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductCategoryResource;
 use App\Http\Resources\ProductResource;
+use App\Models\ComparisonFeature;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -53,6 +55,29 @@ class StoreController extends Controller
         $products = $query->paginate(12)->withQueryString();
 
         return ProductResource::collection($products);
+    }
+
+    public function comparison(): JsonResponse
+    {
+        $features = ComparisonFeature::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get(['id', 'label']);
+
+        $vips = Product::whereNotNull('game_category')
+            ->where('is_active', true)
+            ->with('featureValues')
+            ->orderBy('price')
+            ->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'price' => (float) $p->price,
+                'price_formatted' => '$' . number_format($p->price, 0, ',', '.') . ' CLP',
+                'slug' => $p->slug,
+                'values' => $p->featureValues->mapWithKeys(fn ($v) => [$v->feature_id => $v->value]),
+            ]);
+
+        return response()->json(['features' => $features, 'vips' => $vips]);
     }
 
     public function show(string $slug): ProductResource

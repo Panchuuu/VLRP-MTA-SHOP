@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { createProduct, updateProduct, getAdminCategories } from '../../api/admin';
+import {
+  createProduct,
+  updateProduct,
+  getAdminCategories,
+  getProductFeatures,
+  updateProductFeatures,
+} from '../../api/admin';
 import { BADGE_OPTIONS } from '../../config/badges';
 
 const inputCls =
@@ -40,8 +46,24 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
     is_active: product?.is_active ?? true,
   });
 
+  // Comparador VIP (solo al editar un producto con game_category).
+  const [compFeatures, setCompFeatures] = useState([]);
+  const [compValues, setCompValues] = useState({});
+
   useEffect(() => {
     getAdminCategories().then(setCategories);
+  }, []);
+
+  useEffect(() => {
+    if (isEdit && product?.game_category) {
+      getProductFeatures(product.id)
+        .then((d) => {
+          setCompFeatures(d.features || []);
+          setCompValues(d.values || {});
+        })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -61,8 +83,14 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
         mta_command: form.mta_command.trim() || null,
         image_url: form.image_url.trim() || null,
       };
-      if (isEdit) await updateProduct(product.id, payload);
-      else await createProduct(payload);
+      if (isEdit) {
+        await updateProduct(product.id, payload);
+        if (product.game_category && compFeatures.length) {
+          await updateProductFeatures(product.id, compValues);
+        }
+      } else {
+        await createProduct(payload);
+      }
       toast.success('Producto guardado');
       onSave();
     } catch (err) {
@@ -196,6 +224,35 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
             ))}
           </select>
         </Field>
+
+        {/* Comparador VIP: valores por característica (solo al editar un VIP) */}
+        {isEdit && product?.game_category && compFeatures.length > 0 && (
+          <div className="border border-slate-200 dark:border-[#1e1e30] rounded-xl p-4">
+            <p className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
+              Comparador VIP
+            </p>
+            <p className="text-xs text-slate-500 mb-3">
+              Valor por característica (✓, ✗, $2.000.000, 10…). Vacío = no aplica.
+            </p>
+            <div className="space-y-2">
+              {compFeatures.map((f) => (
+                <div key={f.id} className="flex items-center gap-3">
+                  <span className="text-sm text-slate-600 dark:text-slate-400 flex-1">
+                    {f.label}
+                  </span>
+                  <input
+                    value={compValues[f.id] ?? ''}
+                    onChange={(e) =>
+                      setCompValues((v) => ({ ...v, [f.id]: e.target.value }))
+                    }
+                    placeholder="✓ / ✗ / valor"
+                    className="w-40 bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm outline-none"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <Field
           label="Comando MTA"

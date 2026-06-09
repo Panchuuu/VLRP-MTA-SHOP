@@ -13,6 +13,7 @@ const links = [
   { to: '/admin/faqs', label: 'FAQ', icon: '❓' },
   { to: '/admin/coupons', label: 'Cupones', icon: '🏷️' },
   { to: '/admin/codes', label: 'Códigos', icon: '🎟️' },
+  { to: '/admin/comparison', label: 'Comparador VIP', icon: '⚖️' },
   { to: '/admin/analytics', label: 'Analytics', icon: '📈' },
 ];
 

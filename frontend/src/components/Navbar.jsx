@@ -39,6 +39,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
             <Link to="/" className={linkCls}>Inicio</Link>
             <Link to="/store" className={linkCls}>Tienda</Link>
+            <Link to="/vips" className={linkCls}>VIPs</Link>
             <Link to="/faq" className={linkCls}>FAQ</Link>
             {isAuthenticated() && (
               <Link to="/dashboard" className={linkCls}>Mi Cuenta</Link>
@@ -169,6 +170,7 @@ export default function Navbar() {
             >
               <Link to="/" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Inicio</Link>
               <Link to="/store" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Tienda</Link>
+              <Link to="/vips" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Comparar VIPs</Link>
               <Link to="/gallery" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Galería</Link>
               <Link to="/leaderboard" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">Leaderboard</Link>
               <Link to="/faq" onClick={() => setMobileMenu(false)} className="block py-2 text-slate-700 dark:text-slate-300">FAQ</Link>

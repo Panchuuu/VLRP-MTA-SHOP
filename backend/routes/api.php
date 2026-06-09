@@ -29,6 +29,7 @@ Route::middleware('throttle:10,1')->group(function () {
 // ─── Store (público) ────────────────────────────────────────────────
 Route::get('/categories', [StoreController::class, 'categories']);
 Route::get('/products', [StoreController::class, 'index']);
+Route::get('/vip-comparison', [StoreController::class, 'comparison']);
 Route::get('/products/{slug}', [StoreController::class, 'show']);
 Route::get('/products/{product}/reviews', [ProductReviewController::class, 'index']);
 
@@ -85,8 +86,15 @@ Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function
     Route::get('/categories', [Admin\ProductController::class, 'categories']);
     // param name 'id' matches the controller method signatures (string $id);
     // no 'show' method on the controller, so exclude it.
+    Route::get('products/{id}/features', [Admin\ProductController::class, 'features']);
+    Route::put('products/{id}/features', [Admin\ProductController::class, 'updateFeatures']);
     Route::apiResource('products', Admin\ProductController::class)
         ->parameters(['products' => 'id'])
+        ->except(['show']);
+
+    // Comparador VIP — características (filas)
+    Route::apiResource('comparison-features', Admin\ComparisonFeatureController::class)
+        ->parameters(['comparison-features' => 'id'])
         ->except(['show']);
     Route::get('/orders/export', [Admin\OrderAdminController::class, 'export']);
     Route::get('/orders', [Admin\OrderAdminController::class, 'index']);

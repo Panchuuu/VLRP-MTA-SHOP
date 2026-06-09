@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getCategories, getProducts } from '../api/products';
 import ProductCard from '../components/ProductCard';
@@ -66,13 +67,21 @@ export default function Store() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 pt-24 pb-16">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold font-display text-slate-900 dark:text-white mb-2">
-            Tienda
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Mejora tu experiencia en Valparaíso RP
-          </p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold font-display text-slate-900 dark:text-white mb-2">
+              Tienda
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400">
+              Mejora tu experiencia en Valparaíso RP
+            </p>
+          </div>
+          <Link
+            to="/vips"
+            className="self-start sm:self-auto inline-flex items-center gap-2 bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] hover:border-purple-500/50 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            ⚖️ Comparar VIPs
+          </Link>
         </div>
 
         {/* Filtros */}

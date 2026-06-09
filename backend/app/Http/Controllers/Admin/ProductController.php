@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ComparisonFeature;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductFeatureValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -108,6 +110,47 @@ class ProductController extends Controller
         return response()->json(
             ProductCategory::orderBy('sort_order')->get(['id', 'name', 'slug'])
         );
+    }
+
+    /**
+     * Características activas + los valores actuales del producto (para el form).
+     */
+    public function features(string $id): JsonResponse
+    {
+        $product = Product::with('featureValues')->findOrFail($id);
+
+        return response()->json([
+            'features' => ComparisonFeature::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(['id', 'label']),
+            'values' => $product->featureValues->mapWithKeys(fn ($v) => [$v->feature_id => $v->value]),
+        ]);
+    }
+
+    /**
+     * Guarda los valores del comparador para un producto. Body: { feature_id: value, ... }
+     */
+    public function updateFeatures(Request $request, string $id): JsonResponse
+    {
+        $product = Product::findOrFail($id);
+        $values = $request->input('values', []);
+
+        foreach ($values as $featureId => $value) {
+            $value = is_string($value) ? trim($value) : $value;
+            if ($value === '' || $value === null) {
+                ProductFeatureValue::where('product_id', $product->id)
+                    ->where('feature_id', $featureId)
+                    ->delete();
+
+                continue;
+            }
+            ProductFeatureValue::updateOrCreate(
+                ['product_id' => $product->id, 'feature_id' => $featureId],
+                ['value' => $value]
+            );
+        }
+
+        return response()->json(['message' => 'Comparador actualizado']);
     }
 
     /**
