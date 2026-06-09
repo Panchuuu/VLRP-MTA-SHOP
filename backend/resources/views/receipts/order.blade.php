@@ -72,7 +72,7 @@
         @if($logoData)
           <img src="{{ $logoData }}" style="height:54px;">
         @else
-          <div class="brandtext">&#x2B22; Valparaíso <span>RP</span></div>
+          <div class="brandtext">Valparaíso <span>RP</span></div>
         @endif
       </td>
       <td>
@@ -84,7 +84,7 @@
 
   <div class="body">
     <table class="status-row"><tr>
-      <td style="width:50%;"><span class="badge-paid">&#9679; PAGADO</span></td>
+      <td style="width:50%;"><span class="badge-paid">PAGADO</span></td>
       <td class="date">Orden #{{ strtoupper(substr($order->id, -8)) }}<br>{{ $order->created_at->format('d/m/Y H:i') }}</td>
     </tr></table>
 
@@ -122,7 +122,7 @@
       <table style="width:100%;">
         @if(($order->discount_amount ?? 0) > 0)
         <tr><td class="lbl">Subtotal</td><td class="amt">${{ number_format($subtotal, 0, ',', '.') }}</td></tr>
-        <tr><td class="lbl">Descuento {{ $order->coupon ? '('.$order->coupon->code.')' : '' }}</td><td class="amt">&minus;${{ number_format($order->discount_amount, 0, ',', '.') }}</td></tr>
+        <tr><td class="lbl">Descuento {{ $order->coupon ? '('.$order->coupon->code.')' : '' }}</td><td class="amt">-${{ number_format($order->discount_amount, 0, ',', '.') }}</td></tr>
         @endif
         <tr><td class="grand-lbl">TOTAL</td><td class="grand-amt">${{ number_format($order->total, 0, ',', '.') }} CLP</td></tr>
       </table>
@@ -130,7 +130,7 @@
 
     @if($code)
     <div class="codebox">
-      <div class="ct">&#127903; Tu código de canje ({{ $code->category }})</div>
+      <div class="ct">Tu código de canje ({{ $code->category }})</div>
       <div class="code">{{ $code->code }}</div>
       <div class="hint">Entra al servidor y escribe /canjearvip seguido de tu código para reclamar tu VIP.</div>
     </div>
