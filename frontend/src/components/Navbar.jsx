@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import { useCartStore } from '../store/cartStore';
 import { useThemeStore } from '../store/themeStore';
 import CartDrawer from './CartDrawer';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuthStore();
@@ -93,6 +94,9 @@ export default function Navbar() {
                 )}
               </AnimatePresence>
             </button>
+
+            {/* Notificaciones (solo logueado) */}
+            {isAuthenticated() && <NotificationBell />}
 
             {/* Auth (desktop avatar dropdown) */}
             {isAuthenticated() ? (

@@ -29,6 +29,17 @@ class GenerateRedemptionCode implements ShouldQueue
 
             $code = $codeService->createForPurchase($category, $order, $order->user);
 
+            // Notificación in-app de código listo.
+            if ($order->user_id) {
+                \App\Models\Notification::notify(
+                    $order->user_id,
+                    'code_ready',
+                    'Tu código VIP está listo',
+                    'Código: ' . $code->code,
+                    '/dashboard'
+                );
+            }
+
             // Enviar DM por Discord con el código.
             if ($order->user && $order->user->discord_id) {
                 $discord->sendDirectMessage($order->user->discord_id, [

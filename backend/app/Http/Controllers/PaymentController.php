@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\AssignDiscordRole;
 use App\Jobs\AssignMtaItem;
 use App\Jobs\GenerateRedemptionCode;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\UserProduct;
 use App\Services\FlowService;
@@ -115,6 +116,15 @@ class PaymentController extends Controller
 
         // Generar código(s) VIP canjeable(s) + DM de Discord (el job filtra por game_category).
         GenerateRedemptionCode::dispatch($order)->onQueue('default');
+
+        // Notificación in-app de compra completada.
+        Notification::notify(
+            $order->user_id,
+            'order_completed',
+            '¡Compra exitosa!',
+            'Tu orden fue procesada correctamente.',
+            '/orders'
+        );
     }
 
     private function handleFailed(Order $order): void

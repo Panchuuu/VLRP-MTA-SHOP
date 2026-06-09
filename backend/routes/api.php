@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\DiscordAuthController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductReviewController;
@@ -71,6 +72,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store']);
     Route::get('/products/{product}/can-review', [ProductReviewController::class, 'canReview']);
+
+    // Notificaciones in-app
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read', [NotificationController::class, 'markAllRead']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead']);
 });
 
 // ─── Admin ──────────────────────────────────────────────────────────

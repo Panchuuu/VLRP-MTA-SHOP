@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->hasMany(RedemptionCode::class);
     }
 
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class)->latest();
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         return $this->discord_avatar

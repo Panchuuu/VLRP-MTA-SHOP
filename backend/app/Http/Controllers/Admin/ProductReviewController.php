@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\ProductReview;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,8 +33,19 @@ class ProductReviewController extends Controller
 
     public function update(string $id): JsonResponse
     {
-        $review = ProductReview::findOrFail($id);
+        $review = ProductReview::with('product:id,slug')->findOrFail($id);
         $review->update(['is_approved' => ! $review->is_approved]);
+
+        // Notificar al autor cuando su reseña pasa a aprobada.
+        if ($review->is_approved) {
+            Notification::notify(
+                $review->user_id,
+                'review_approved',
+                'Tu reseña fue publicada',
+                null,
+                $review->product ? '/store/' . $review->product->slug : null
+            );
+        }
 
         return response()->json(['is_approved' => $review->is_approved]);
     }
