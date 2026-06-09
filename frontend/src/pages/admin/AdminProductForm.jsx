@@ -7,7 +7,7 @@ import {
   getProductFeatures,
   updateProductFeatures,
 } from '../../api/admin';
-import { BADGE_OPTIONS } from '../../config/badges';
+import { BADGE_COLORS } from '../../config/badges';
 
 const inputCls =
   'w-full bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-700 rounded-lg px-3 py-2 text-sm outline-none';
@@ -41,6 +41,7 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
     discord_role_id: product?.discord_role_id ?? '',
     game_category: product?.game_category ?? '',
     badge: product?.badge ?? '',
+    badge_color: product?.badge_color ?? 'purple',
     mta_command: product?.mta_command ?? '',
     sort_order: product?.sort_order ?? 0,
     is_active: product?.is_active ?? true,
@@ -79,7 +80,8 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
         duration_days: form.duration_days ? parseInt(form.duration_days) : null,
         discord_role_id: form.discord_role_id.trim() || null,
         game_category: form.game_category || null,
-        badge: form.badge || null,
+        badge: form.badge.trim() || null,
+        badge_color: form.badge.trim() ? form.badge_color || 'purple' : null,
         mta_command: form.mta_command.trim() || null,
         image_url: form.image_url.trim() || null,
       };
@@ -211,18 +213,40 @@ export default function AdminProductForm({ product, onSave, onCancel }) {
           </select>
         </Field>
 
-        <Field label="Badge destacado" hint="Etiqueta que se muestra sobre la imagen del producto.">
-          <select
+        <Field label="Badge destacado" hint="Texto libre que se muestra sobre la imagen. Dejar vacío para no mostrar badge.">
+          <input
             className={inputCls}
             value={form.badge}
+            maxLength={30}
             onChange={(e) => set('badge', e.target.value)}
-          >
-            {BADGE_OPTIONS.map((b) => (
-              <option key={b.value} value={b.value}>
-                {b.label}
-              </option>
-            ))}
-          </select>
+            placeholder="Ej: Prueba, Oferta, 2x1..."
+          />
+          {form.badge.trim() && (
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-xs text-slate-500 dark:text-slate-400 mr-1">Color:</span>
+              {BADGE_COLORS.map((c) => (
+                <button
+                  type="button"
+                  key={c.key}
+                  onClick={() => set('badge_color', c.key)}
+                  title={c.key}
+                  className={`w-6 h-6 rounded-full ${c.class} transition-transform hover:scale-110 ${
+                    form.badge_color === c.key
+                      ? 'ring-2 ring-offset-2 ring-slate-400 dark:ring-offset-[#0f0f1a]'
+                      : ''
+                  }`}
+                />
+              ))}
+              {/* Preview */}
+              <span
+                className={`ml-2 text-white text-xs font-bold px-2.5 py-1 rounded-full ${
+                  BADGE_COLORS.find((c) => c.key === form.badge_color)?.class || 'bg-purple-600'
+                }`}
+              >
+                {form.badge.toUpperCase()}
+              </span>
+            </div>
+          )}
         </Field>
 
         {/* Comparador VIP: valores por característica (solo al editar un VIP) */}

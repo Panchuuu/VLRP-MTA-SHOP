@@ -12,7 +12,7 @@ class Product extends Model
     use HasUuids;
 
     protected $fillable = [
-        'category_id', 'game_category', 'badge', 'name', 'slug', 'description', 'price',
+        'category_id', 'game_category', 'badge', 'badge_color', 'name', 'slug', 'description', 'price',
         'is_recurring', 'duration_days', 'image_url', 'discord_role_id',
         'mta_command', 'is_active', 'sort_order', 'stock',
     ];

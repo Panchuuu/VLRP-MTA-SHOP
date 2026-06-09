@@ -7,7 +7,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import Navbar from '../components/Navbar';
 import StarRating from '../components/StarRating';
-import { BADGES } from '../config/badges';
+import { badgeColorClass } from '../config/badges';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -106,11 +106,11 @@ export default function ProductDetail() {
               alt={product.name}
               className="w-full rounded-xl border border-slate-200 dark:border-[#1e1e30]"
             />
-            {product.badge && BADGES[product.badge] && (
+            {product.badge && (
               <span
-                className={`absolute top-3 left-3 text-white text-xs font-bold font-display px-2.5 py-1 rounded-full ${BADGES[product.badge].className}`}
+                className={`absolute top-3 left-3 text-white text-xs font-bold font-display px-2.5 py-1 rounded-full ${badgeColorClass(product.badge_color)}`}
               >
-                {BADGES[product.badge].label}
+                {product.badge.toUpperCase()}
               </span>
             )}
           </div>

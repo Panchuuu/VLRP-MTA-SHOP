@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import StarRating from './StarRating';
-import { BADGES } from '../config/badges';
+import { badgeColorClass } from '../config/badges';
 
 export default function ProductCard({ product }) {
   const addItem = useCartStore((s) => s.addItem);
@@ -30,12 +30,12 @@ export default function ProductCard({ product }) {
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        {/* Badge destacado */}
-        {product.badge && BADGES[product.badge] && (
+        {/* Badge destacado (texto + color personalizados) */}
+        {product.badge && (
           <span
-            className={`absolute top-3 left-3 text-white text-xs font-bold font-display px-2.5 py-1 rounded-full ${BADGES[product.badge].className}`}
+            className={`absolute top-3 left-3 text-white text-xs font-bold font-display px-2.5 py-1 rounded-full ${badgeColorClass(product.badge_color)}`}
           >
-            {BADGES[product.badge].label}
+            {product.badge.toUpperCase()}
           </span>
         )}
         {/* Badge de duración */}
