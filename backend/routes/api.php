@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\DiscordAuthController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\GiftController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -83,6 +84,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Billetera
     Route::get('/wallet', [WalletController::class, 'index']);
     Route::post('/wallet/topup', [WalletController::class, 'topup']);
+
+    // Regalos: validar destinatario de Discord antes de pagar
+    Route::post('/gift/validate-recipient', [GiftController::class, 'validateRecipient']);
 
     // Notificaciones in-app
     Route::get('/notifications', [NotificationController::class, 'index']);

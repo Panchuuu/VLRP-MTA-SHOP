@@ -15,6 +15,7 @@ class Order extends Model
         'user_id', 'status', 'total', 'payment_method',
         'payment_id', 'payment_metadata',
         'coupon_id', 'discount_amount', 'subtotal',
+        'is_gift', 'gift_recipient_discord_id', 'gift_recipient_username', 'gift_message',
     ];
 
     protected $casts = [
@@ -22,6 +23,7 @@ class Order extends Model
         'discount_amount' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'payment_metadata' => 'array',
+        'is_gift' => 'boolean',
     ];
 
     public function user(): BelongsTo

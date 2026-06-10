@@ -89,6 +89,17 @@ export default function Orders() {
                   <StatusBadge status={order.status} label={order.status_label} />
                 </div>
 
+                {order.is_gift && (
+                  <div className="mb-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
+                    🎁 Regalo para <span className="font-semibold">@{order.gift_recipient_username}</span>
+                    {order.gift_message && (
+                      <span className="block text-amber-600/80 dark:text-amber-400/80 mt-0.5 italic">
+                        “{order.gift_message}”
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <div className="space-y-1.5 border-t border-slate-200 dark:border-[#1e1e30] pt-3">
                   {(order.items || []).map((item) => (
                     <div

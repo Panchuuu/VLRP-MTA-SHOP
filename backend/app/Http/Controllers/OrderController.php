@@ -40,6 +40,9 @@ class OrderController extends Controller
             'coupon_id' => 'nullable|uuid|exists:coupons,id',
             'discount_amount' => 'nullable|numeric|min:0',
             'payment_method' => 'nullable|in:flow,wallet',
+            'is_gift' => 'nullable|boolean',
+            'gift_recipient_username' => 'required_if:is_gift,true|nullable|string|max:100',
+            'gift_message' => 'nullable|string|max:280',
         ]);
 
         // Cargar productos desde DB (nunca confiar en precios del cliente)
@@ -76,6 +79,27 @@ class OrderController extends Controller
         $method = $request->input('payment_method', 'flow');
         $user = $request->user();
 
+        // ── Regalo: resolver el destinatario en el servidor (no confiar en el cliente) ──
+        $isGift = (bool) $request->boolean('is_gift');
+        $giftRecipient = null;
+        if ($isGift) {
+            $giftRecipient = app(\App\Services\DiscordService::class)
+                ->findMemberByUsername($validated['gift_recipient_username']);
+
+            if (! $giftRecipient) {
+                return response()->json([
+                    'message' => 'No encontramos al destinatario en el Discord de Valparaíso RP. '
+                        . 'Verifica el nombre de usuario.',
+                ], 422);
+            }
+
+            if ($giftRecipient['discord_id'] === $user->discord_id) {
+                return response()->json([
+                    'message' => 'No puedes regalarte un producto a ti mismo.',
+                ], 422);
+            }
+        }
+
         // Pago con saldo: verificar saldo suficiente antes de crear la orden.
         if ($method === 'wallet' && (float) $user->wallet_balance < $finalTotal) {
             return response()->json(['message' => 'Saldo insuficiente'], 422);
@@ -97,6 +121,10 @@ class OrderController extends Controller
                 'total' => $finalTotal,
                 'coupon_id' => $couponId,
                 'payment_method' => $method,
+                'is_gift' => $isGift,
+                'gift_recipient_discord_id' => $giftRecipient['discord_id'] ?? null,
+                'gift_recipient_username' => $giftRecipient['username'] ?? null,
+                'gift_message' => $isGift ? ($validated['gift_message'] ?? null) : null,
             ]);
 
             foreach ($validated['items'] as $item) {

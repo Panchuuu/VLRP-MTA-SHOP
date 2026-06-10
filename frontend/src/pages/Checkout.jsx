@@ -4,6 +4,7 @@ import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { createOrder } from '../api/orders';
 import { getWallet } from '../api/wallet';
+import { validateGiftRecipient } from '../api/gift';
 import Navbar from '../components/Navbar';
 
 export default function Checkout() {
@@ -16,6 +17,37 @@ export default function Checkout() {
   const [error, setError] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
   const [payMethod, setPayMethod] = useState('flow');
+
+  // ── Regalo ──
+  const [isGift, setIsGift] = useState(false);
+  const [giftUsername, setGiftUsername] = useState('');
+  const [giftMessage, setGiftMessage] = useState('');
+  const [recipient, setRecipient] = useState(null);
+  const [verifying, setVerifying] = useState(false);
+  const [giftError, setGiftError] = useState('');
+
+  const verifyRecipient = async () => {
+    const name = giftUsername.trim();
+    if (!name) return;
+    setVerifying(true);
+    setGiftError('');
+    setRecipient(null);
+    try {
+      const data = await validateGiftRecipient(name);
+      if (data.found) {
+        setRecipient(data.recipient);
+      } else {
+        setGiftError(data.message || 'No se encontró al usuario.');
+      }
+    } catch (err) {
+      setGiftError(
+        err.response?.data?.message ||
+          'No se encontró al usuario en el Discord de Valparaíso RP.'
+      );
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -64,6 +96,10 @@ export default function Checkout() {
       setError('El email es requerido para procesar el pago.');
       return;
     }
+    if (isGift && !recipient) {
+      setError('Verifica el usuario de Discord del destinatario antes de pagar.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -72,6 +108,11 @@ export default function Checkout() {
       if (coupon) {
         extra.coupon_id = coupon.coupon_id;
         extra.discount_amount = getDiscount();
+      }
+      if (isGift && recipient) {
+        extra.is_gift = true;
+        extra.gift_recipient_username = recipient.username;
+        extra.gift_message = giftMessage.trim() || undefined;
       }
       const data = await createOrder(payload, email.trim(), extra);
       clearCart();
@@ -153,6 +194,101 @@ export default function Checkout() {
           )}
         </div>
 
+        {/* Regalo */}
+        <div className="mb-5">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={isGift}
+              onChange={(e) => {
+                setIsGift(e.target.checked);
+                setGiftError('');
+                if (!e.target.checked) setRecipient(null);
+              }}
+              className="w-4 h-4 accent-purple-600"
+            />
+            <span className="text-sm font-medium text-slate-900 dark:text-white">
+              🎁 Es un regalo para otra persona
+            </span>
+          </label>
+
+          {isGift && (
+            <div className="mt-3 space-y-3 bg-white dark:bg-[#0f0f1a] border border-slate-200 dark:border-[#1e1e30] rounded-xl p-4">
+              <div>
+                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1.5">
+                  Usuario de Discord del destinatario
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={giftUsername}
+                    onChange={(e) => {
+                      setGiftUsername(e.target.value);
+                      setRecipient(null);
+                      setGiftError('');
+                    }}
+                    placeholder="ej: pancho"
+                    className="flex-1 bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 rounded-lg px-3 py-2 text-sm outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={verifyRecipient}
+                    disabled={verifying || !giftUsername.trim()}
+                    className="bg-slate-100 dark:bg-[#1a1a2e] hover:bg-slate-200 dark:hover:bg-[#22223a] disabled:opacity-50 text-slate-800 dark:text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap"
+                  >
+                    {verifying ? '...' : 'Verificar'}
+                  </button>
+                </div>
+                <p className="text-xs text-slate-400 dark:text-slate-600 mt-1">
+                  Debe estar en el Discord de Valparaíso RP.
+                </p>
+              </div>
+
+              {recipient && (
+                <div className="flex items-center gap-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/40 rounded-lg px-3 py-2">
+                  <img
+                    src={recipient.avatar_url}
+                    alt={recipient.display_name}
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                      {recipient.display_name}
+                    </p>
+                    <p className="text-xs text-green-600 dark:text-green-400">
+                      ✓ Encontrado · @{recipient.username}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {giftError && (
+                <p className="text-xs text-red-500 dark:text-red-400">{giftError}</p>
+              )}
+
+              <div>
+                <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1.5">
+                  Mensaje (opcional)
+                </label>
+                <textarea
+                  value={giftMessage}
+                  onChange={(e) => setGiftMessage(e.target.value.slice(0, 280))}
+                  rows={2}
+                  placeholder="¡Feliz cumpleaños! 🎉"
+                  className="w-full bg-slate-50 dark:bg-[#080810] border border-slate-200 dark:border-[#1e1e30] focus:border-purple-500/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 rounded-lg px-3 py-2 text-sm outline-none resize-none"
+                />
+                <p className="text-[11px] text-slate-400 dark:text-slate-600 mt-1 text-right">
+                  {giftMessage.length}/280
+                </p>
+              </div>
+
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                El código VIP se enviará por DM de Discord al destinatario, no a ti.
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Método de pago */}
         <div className="mb-5 space-y-2">
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-1.5">Método de pago</p>
@@ -198,7 +334,7 @@ export default function Checkout() {
 
         <button
           onClick={handlePay}
-          disabled={loading || !email.trim()}
+          disabled={loading || !email.trim() || (isGift && !recipient)}
           className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl text-base transition-colors flex items-center justify-center gap-3"
         >
           {loading ? (

@@ -30,13 +30,13 @@ class CodeService
         return $out;
     }
 
-    public function createForPurchase(string $category, Order $order, User $user): RedemptionCode
+    public function createForPurchase(string $category, Order $order, ?User $user): RedemptionCode
     {
         return RedemptionCode::create([
             'code' => $this->generateUnique(),
             'category' => $category,
             'order_id' => $order->id,
-            'user_id' => $user->id,
+            'user_id' => $user?->id,
             'source' => 'purchase',
             'status' => 'pending',
         ]);

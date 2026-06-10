@@ -24,6 +24,9 @@ class OrderResource extends JsonResource
             'total' => (float) $this->total,
             'total_formatted' => '$' . number_format($this->total, 0, ',', '.') . ' CLP',
             'payment_method' => $this->payment_method,
+            'is_gift' => (bool) $this->is_gift,
+            'gift_recipient_username' => $this->gift_recipient_username,
+            'gift_message' => $this->gift_message,
             'items' => $this->whenLoaded('items', fn () => $this->items->map(fn ($item) => [
                 'id' => $item->id,
                 'product_id' => $item->product_id,
