@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ServerStatusController extends Controller
@@ -111,26 +111,33 @@ class ServerStatusController extends Controller
         ];
     }
 
+    /**
+     * Top de personajes por horas jugadas, leído directamente de la BD MySQL
+     * del servidor MTA (conexión 'mysql_mta', SOLO LECTURA / SELECT).
+     * Cacheado 5 min y fail-safe: si MySQL no responde, devuelve lista vacía.
+     */
     public function leaderboard(): JsonResponse
     {
         $data = Cache::remember('mta_leaderboard', 300, function () {
             try {
-                $url = trim((string) config('services.mta.server_url'));
-                if ($url !== '' && ! preg_match('#^https?://#i', $url)) {
-                    $url = 'http://' . $url;
-                }
-                $response = Http::timeout(5)
-                    ->withHeaders(['X-Secret' => config('services.mta.secret')])
-                    ->get(rtrim($url, '/') . '/leaderboard');
+                return DB::connection('mysql_mta')
+                    ->table('characters')
+                    ->select('charactername', 'hoursplayed')
+                    ->orderByDesc('hoursplayed')
+                    ->limit(50)
+                    ->get()
+                    ->map(fn ($row, $i) => [
+                        'rank' => $i + 1,
+                        'name' => $row->charactername,
+                        'hours' => (int) $row->hoursplayed,
+                    ])
+                    ->values()
+                    ->all(); // cachear un array plano, no un objeto Collection
+            } catch (\Throwable $e) {
+                Log::warning('Leaderboard MySQL read failed: ' . $e->getMessage());
 
-                if ($response->ok()) {
-                    return $response->json('players', []);
-                }
-            } catch (\Exception $e) {
-                Log::warning('MTA leaderboard fetch failed: ' . $e->getMessage());
+                return [];
             }
-
-            return [];
         });
 
         return response()->json(['data' => $data]);

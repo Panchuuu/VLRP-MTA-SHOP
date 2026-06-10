@@ -99,6 +99,27 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
+        // Conexión de SOLO LECTURA hacia la BD MySQL del servidor MTA (leaderboard).
+        // Nunca escribir aquí: únicamente SELECT. Timeout corto para que un MySQL
+        // caído no cuelgue el request (devolvemos leaderboard vacío en su lugar).
+        'mysql_mta' => [
+            'driver' => 'mysql',
+            'host' => env('MTA_DB_HOST'),
+            'port' => env('MTA_DB_PORT', 3306),
+            'database' => env('MTA_DB_DATABASE'),
+            'username' => env('MTA_DB_USERNAME'),
+            'password' => env('MTA_DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? [
+                PDO::ATTR_TIMEOUT => 5,
+            ] : [],
+        ],
+
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
